@@ -10,7 +10,6 @@
 :root {
   --bg:#F4F2EE; --white:#fff; --navy:#0D1B2A; --accent:#C8922A; --accent2:#F0C97A;
   --border:#D6D0C6; --muted:#8A8680; --text:#1A1A1A;
-  --paulina:#2D6A9F; --margot:#2D8A6A; --dounia:#7A3DAA; --marta:#B05A20; --jerome:#1A7A7A;
   --high:#C02A2A; --med:#B07010; --low:#2D7A4A;
   --open:#2D6A9F; --inprogress:#B07010; --resolved:#2D7A4A;
 }
@@ -19,17 +18,22 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 .view{display:none;} .view.active{display:block;}
 
 /* TOPBAR */
-.topbar{background:var(--navy);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+.topbar{background:var(--navy);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;flex-wrap:wrap;gap:8px;}
 .tb-left{display:flex;flex-direction:column;}
 .tb-brand{font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);letter-spacing:2px;text-transform:uppercase;}
 .tb-title{font-size:14px;font-weight:600;color:#fff;}
-.tb-right{display:flex;gap:8px;align-items:center;}
+.tb-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
 .btn-nav{padding:6px 14px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.65);font-family:'IBM Plex Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;}
 .btn-nav:hover,.btn-nav.active{border-color:var(--accent);color:var(--accent);}
 .btn-accent{padding:6px 16px;background:var(--accent);color:#fff;border:none;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:opacity .2s;}
 .btn-accent:hover{opacity:.85;}
 .btn-back{padding:6px 14px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.65);font-family:'IBM Plex Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;}
 .btn-back:hover{border-color:var(--accent);color:var(--accent);}
+.btn-lang{padding:4px 10px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.5);font-family:'IBM Plex Mono',monospace;font-size:11px;cursor:pointer;transition:all .15s;}
+.btn-lang:hover{border-color:var(--accent2);color:var(--accent2);}
+
+/* LAST UPDATED */
+.last-updated{font-size:10px;color:rgba(255,255,255,.3);font-family:'IBM Plex Mono',monospace;padding:4px 0;}
 
 /* BREADCRUMB */
 .bc{max-width:1100px;margin:0 auto;padding:10px 28px 0;font-size:11px;color:var(--muted);display:flex;gap:6px;align-items:center;}
@@ -47,13 +51,11 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 .instr{background:var(--navy);padding:13px 20px;font-size:13px;color:rgba(255,255,255,.65);line-height:1.6;margin-bottom:24px;border-left:3px solid var(--accent);}
 .instr strong{color:var(--accent2);font-weight:500;}
 
-/* LOADING BANNER */
+/* LOADING / ERROR BANNERS */
 .loading-banner{background:var(--navy);border-left:3px solid var(--accent2);padding:10px 20px;font-size:12px;color:rgba(255,255,255,.65);margin-bottom:16px;display:none;align-items:center;gap:10px;}
 .loading-banner.visible{display:flex;}
 .loading-dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);animation:pulse 1.2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-
-/* ERROR BANNER */
 .error-banner{background:#fdecea;border-left:3px solid var(--high);padding:10px 20px;font-size:12px;color:var(--high);margin-bottom:16px;display:none;align-items:center;justify-content:space-between;gap:10px;}
 .error-banner.visible{display:flex;}
 .btn-retry{padding:4px 12px;background:var(--high);color:#fff;border:none;font-family:'IBM Plex Sans',sans-serif;font-size:11px;cursor:pointer;}
@@ -62,10 +64,10 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 .filter-bar{display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap;}
 .filter-bar input,.filter-bar select{padding:7px 12px;border:1px solid var(--border);background:var(--white);font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--text);outline:none;transition:border-color .15s;}
 .filter-bar input:focus,.filter-bar select:focus{border-color:var(--accent);}
-.filter-bar input{flex:1;min-width:200px;}
-.filter-bar select{min-width:130px;}
-.filter-bar .btn-clear-filter{padding:7px 14px;border:1px solid var(--border);background:transparent;font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s;}
-.filter-bar .btn-clear-filter:hover{border-color:var(--accent);color:var(--accent);}
+.filter-bar input{flex:1;min-width:180px;}
+.filter-bar select{min-width:120px;}
+.btn-clear-filter{padding:7px 14px;border:1px solid var(--border);background:transparent;font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s;}
+.btn-clear-filter:hover{border-color:var(--accent);color:var(--accent);}
 
 /* OWNER CARDS */
 .owners-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:32px;}
@@ -94,7 +96,7 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 .gtable .lnk{cursor:pointer;color:var(--accent);font-weight:600;}
 .gtable .lnk:hover{opacity:.75;}
 
-/* STATUS BADGE */
+/* BADGES */
 .sbadge{padding:2px 9px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-radius:2px;}
 .sb-open{background:rgba(45,106,159,.1);color:var(--open);}
 .sb-inprogress{background:rgba(176,112,16,.1);color:var(--inprogress);}
@@ -127,7 +129,7 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 /* ENTRY FORM */
 .eform{background:var(--white);border:1px solid var(--border);margin-bottom:24px;}
 .fhead{padding:11px 18px;background:#FAFAF8;border-bottom:1px solid var(--border);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center;}
-.frow1{display:grid;grid-template-columns:150px 1fr 120px 130px;border-bottom:1px solid var(--border);}
+.frow1{display:grid;grid-template-columns:150px 1fr 130px 120px 130px;border-bottom:1px solid var(--border);}
 .frow1 input,.frow1 select{border:none;outline:none;padding:10px 14px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--text);background:transparent;width:100%;}
 .frow1>*+*{border-left:1px solid var(--border);}
 .frow1 select{cursor:pointer;appearance:none;-webkit-appearance:none;}
@@ -151,29 +153,33 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 
 /* HISTORY */
 .hist-tb{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.btn-sm{padding:5px 14px;background:var(--accent);color:#fff;border:none;font-family:'IBM Plex Sans',sans-serif;font-size:11px;cursor:pointer;opacity:.9;}
-.btn-sm:hover{opacity:1;}
 .btn-sm-outline{padding:5px 14px;background:transparent;color:var(--muted);border:1px solid var(--border);font-family:'IBM Plex Sans',sans-serif;font-size:11px;cursor:pointer;}
 .btn-sm-outline:hover{border-color:var(--accent);color:var(--accent);}
 .hist-empty{text-align:center;padding:40px;background:var(--white);border:1px dashed var(--border);color:var(--muted);font-size:13px;font-style:italic;}
 
 .h-entry{background:var(--white);border:1px solid var(--border);margin-bottom:10px;animation:fadeUp .25s ease both;}
 .h-entry:hover{border-color:rgba(200,146,42,.35);}
-.h-head{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#FAFAF8;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
+.h-head{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#FAFAF8;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;flex-wrap:wrap;}
 .h-date{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;color:var(--navy);white-space:nowrap;}
-.h-issue{font-size:13px;color:var(--text);flex:1;}
+.h-issue{font-size:13px;color:var(--text);flex:1;min-width:120px;}
 .h-tog{font-size:11px;color:var(--muted);margin-left:auto;}
 .h-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;padding:16px;}
 .h-body.closed{display:none;}
 .h-sec h4{font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
 .h-sec p{font-size:12px;color:var(--text);line-height:1.6;}
 .h-sec p.empty{color:#C0BAB0;font-style:italic;}
-.h-foot{padding:8px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.h-foot{padding:8px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
 .h-meta{font-size:10px;color:var(--border);font-family:'IBM Plex Mono',monospace;}
-.h-actions{display:flex;gap:6px;align-items:center;}
+.h-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
 .btn-del{font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;padding:2px 6px;transition:color .15s;}
 .btn-del:hover{color:var(--high);}
 .status-select{font-size:11px;border:1px solid var(--border);padding:3px 8px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer;background:var(--white);color:var(--text);outline:none;}
+
+/* SESSION TRACKING */
+.session-tag{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;background:rgba(45,106,159,.1);color:var(--open);font-size:10px;font-weight:600;border-radius:2px;cursor:pointer;}
+.session-tag:hover{background:rgba(45,106,159,.2);}
+.btn-mark-session{font-size:11px;color:var(--open);background:none;border:1px solid var(--open);cursor:pointer;padding:3px 10px;font-family:'IBM Plex Sans',sans-serif;transition:all .15s;}
+.btn-mark-session:hover{background:var(--open);color:#fff;}
 
 /* EDIT MODE */
 .h-entry.editing{border-color:var(--accent);box-shadow:0 0 0 2px rgba(200,146,42,.15);}
@@ -186,7 +192,7 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 .edit-ta-lbl{font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
 .edit-ta-wrap textarea{border:1px solid var(--border);padding:8px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--text);outline:none;resize:none;min-height:72px;line-height:1.5;}
 .edit-ta-wrap textarea:focus{border-color:var(--accent);}
-.edit-actions{display:flex;gap:8px;align-items:center;justify-content:space-between;}
+.edit-actions{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
 .edit-modified{font-size:10px;color:var(--muted);font-style:italic;font-family:'IBM Plex Mono',monospace;}
 .btn-edit{font-size:11px;color:var(--accent);background:none;border:1px solid var(--accent);cursor:pointer;padding:3px 10px;transition:all .15s;font-family:'IBM Plex Sans',sans-serif;}
 .btn-edit:hover{background:var(--accent);color:#fff;}
@@ -202,7 +208,6 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 .kpi-num{font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--navy);line-height:1;}
 .kpi-label{font-size:11px;color:var(--muted);margin-top:6px;text-transform:uppercase;letter-spacing:1px;}
 .kpi-sub{font-size:11px;color:var(--accent);margin-top:4px;font-weight:500;}
-
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;}
 .chart-card{background:var(--white);border:1px solid var(--border);padding:18px 20px;}
 .chart-card h3{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
@@ -213,70 +218,111 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 .bar-val{font-size:11px;color:var(--muted);width:28px;text-align:right;font-family:'IBM Plex Mono',monospace;}
 
 /* SESSION VIEW */
-.session-header{background:var(--navy);padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;}
+.session-header{background:var(--navy);padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
 .session-header h2{font-size:20px;font-weight:700;color:#fff;}
 .session-header p{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px;}
-.agenda-item{background:var(--white);border:1px solid var(--border);border-left:4px solid var(--accent);padding:14px 18px;margin-bottom:10px;display:flex;align-items:flex-start;gap:14px;}
+.agenda-item{background:var(--white);border:1px solid var(--border);border-left:4px solid var(--accent);padding:14px 18px;margin-bottom:10px;display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;}
 .agenda-num{font-size:20px;font-weight:700;color:var(--border);font-family:'IBM Plex Mono',monospace;min-width:32px;}
 .agenda-content h4{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px;}
 .agenda-content p{font-size:12px;color:var(--muted);line-height:1.5;}
 .agenda-meta{margin-left:auto;text-align:right;white-space:nowrap;}
 
 /* BACKLOG */
-.bl-item{background:var(--white);border:1px solid var(--border);padding:14px 18px;margin-bottom:10px;display:grid;grid-template-columns:1fr 120px 120px 80px;gap:14px;align-items:center;}
+.bl-item{background:var(--white);border:1px solid var(--border);padding:14px 18px;margin-bottom:10px;display:grid;grid-template-columns:1fr 100px 160px 80px;gap:14px;align-items:center;}
 .bl-item:hover{border-color:rgba(200,146,42,.35);}
-.bl-title{font-size:13px;font-weight:500;color:var(--navy);}
+.bl-item.from-entry{border-left:3px solid var(--accent);}
+.bl-title-text{font-size:13px;font-weight:500;color:var(--navy);}
 .bl-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+.bl-link{font-size:10px;color:var(--accent);margin-top:3px;font-style:italic;}
 .bl-form{background:var(--white);border:1px solid var(--border);padding:16px 18px;margin-bottom:20px;display:grid;grid-template-columns:1fr 140px 140px 100px auto;gap:10px;align-items:end;}
 .bl-form input,.bl-form select{border:1px solid var(--border);padding:7px 10px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--text);outline:none;width:100%;}
 .bl-form input:focus,.bl-form select:focus{border-color:var(--accent);}
 .bl-form label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;}
+.bl-filter-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.bl-filter-bar input,.bl-filter-bar select{padding:6px 10px;border:1px solid var(--border);background:var(--white);font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--text);outline:none;}
+.bl-filter-bar input{flex:1;min-width:150px;}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;font-size:13px;font-family:'IBM Plex Sans',sans-serif;color:#fff;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:fadeUp .3s ease both;}
 
+/* SESSION MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:center;justify-content:center;}
+.modal-overlay.visible{display:flex;}
+.modal{background:var(--white);padding:28px;max-width:420px;width:90%;border-top:4px solid var(--accent);}
+.modal h3{font-size:16px;font-weight:600;color:var(--navy);margin-bottom:16px;}
+.modal label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;}
+.modal input,.modal textarea{width:100%;border:1px solid var(--border);padding:8px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--text);outline:none;margin-bottom:14px;}
+.modal input:focus,.modal textarea:focus{border-color:var(--accent);}
+.modal textarea{min-height:72px;resize:none;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 
 @media(max-width:700px){
   .dash-grid{grid-template-columns:1fr 1fr;}
   .chart-grid{grid-template-columns:1fr;}
-  .frow1,.frow2,.h-body,.bl-item,.bl-form{grid-template-columns:1fr;}
+  .frow1{grid-template-columns:1fr 1fr;}
   .frow1>*+*{border-left:none;border-top:1px solid var(--border);}
+  .frow2,.h-body,.edit-row2{grid-template-columns:1fr;}
   .fta{border-right:none;border-bottom:1px solid var(--border);}
   .owners-grid{grid-template-columns:1fr;}
+  .bl-item{grid-template-columns:1fr 1fr;}
+  .bl-form{grid-template-columns:1fr 1fr;}
+  .edit-row1{grid-template-columns:1fr;}
+  .topbar{padding:10px 16px;}
+  .wrap{padding:16px 14px 60px;}
 }
 </style>
 </head>
 <body>
 
+<!-- SESSION MODAL -->
+<div class="modal-overlay" id="session-modal">
+  <div class="modal">
+    <h3 id="modal-title">Mark as discussed in session</h3>
+    <label data-i="session_date_lbl">Session Date</label>
+    <input type="date" id="modal-session-date">
+    <label data-i="session_notes_lbl">Session Notes</label>
+    <textarea id="modal-session-notes" placeholder="Decision made, action items…"></textarea>
+    <div class="modal-actions">
+      <button class="btn-cancel-edit" onclick="closeSessionModal()">Cancel</button>
+      <button class="btn-save-edit" onclick="saveSessionMark()">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- ════ HOME ════ -->
 <div class="view active" id="view-home">
   <div class="topbar">
-    <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title">Ticket Review — Input Collection</div></div>
+    <div class="tb-left">
+      <div class="tb-brand">Nexans HR Digital</div>
+      <div class="tb-title" data-i="app_title">Ticket Review — Input Collection</div>
+    </div>
     <div class="tb-right">
-      <button class="btn-nav active" onclick="goDash()">📊 Dashboard</button>
-      <button class="btn-nav" onclick="goSession()">📋 Session View</button>
-      <button class="btn-nav" onclick="goBacklog()">⚙️ Backlog</button>
-      <button class="btn-accent" onclick="exportAll()">⬇ Export All</button>
+      <span class="last-updated" id="last-updated-home"></span>
+      <button class="btn-lang" onclick="toggleLang()">FR/EN</button>
+      <button class="btn-nav active" onclick="goDash()" data-i="nav_dash">📊 Dashboard</button>
+      <button class="btn-nav" onclick="goSession()" data-i="nav_session">📋 Session View</button>
+      <button class="btn-nav" onclick="goBacklog()" data-i="nav_backlog">⚙️ Backlog</button>
+      <button class="btn-accent" onclick="exportAll()" data-i="nav_export">⬇ Export All</button>
     </div>
   </div>
   <div class="wrap">
-    <div class="loading-banner" id="home-loading"><div class="loading-dot"></div> Loading data from SharePoint…</div>
+    <div class="loading-banner" id="home-loading"><div class="loading-dot"></div> <span data-i="loading">Loading data…</span></div>
     <div class="error-banner" id="home-error"><span id="home-error-msg">Could not load data.</span><button class="btn-retry" onclick="initData()">↺ Retry</button></div>
-    <div class="instr"><strong>How it works:</strong> Click an owner to browse their modules. Every entry is <strong>dated, timestamped and versioned</strong>. Use the Dashboard for analytics, Session View to prepare the agenda, and Backlog to track system improvements.</div>
+    <div class="instr"><strong data-i="how_works_title">How it works:</strong> <span data-i="how_works_body">Click an owner to browse their modules. Every entry is dated, timestamped and versioned.</span></div>
     <div class="filter-bar">
-      <input type="text" id="f-search" placeholder="🔍 Search issues, owners, modules…" oninput="applyFilters()">
-      <select id="f-owner" onchange="applyFilters()"><option value="">All owners</option></select>
-      <select id="f-module" onchange="applyFilters()"><option value="">All modules</option></select>
-      <select id="f-prio" onchange="applyFilters()"><option value="">All priorities</option><option value="high">🔴 High</option><option value="med">🟡 Med</option><option value="low">🟢 Low</option></select>
-      <select id="f-status" onchange="applyFilters()"><option value="">All statuses</option><option value="open">Open</option><option value="inprogress">In Progress</option><option value="resolved">Resolved</option></select>
+      <input type="text" id="f-search" placeholder="🔍 Search…" oninput="applyFilters()">
+      <select id="f-owner" onchange="applyFilters()"><option value="" data-i="all_owners">All owners</option></select>
+      <select id="f-module" onchange="applyFilters()"><option value="" data-i="all_modules">All modules</option></select>
+      <select id="f-prio" onchange="applyFilters()"><option value="" data-i="all_prios">All priorities</option><option value="high">🔴 High</option><option value="med">🟡 Med</option><option value="low">🟢 Low</option></select>
+      <select id="f-status" onchange="applyFilters()"><option value="" data-i="all_statuses">All statuses</option><option value="open">Open</option><option value="inprogress">In Progress</option><option value="resolved">Resolved</option></select>
       <button class="btn-clear-filter" onclick="clearFilters()">✕ Clear</button>
     </div>
-    <div class="slabel">Contributors</div>
+    <div class="slabel" data-i="contributors">Contributors</div>
     <div class="owners-grid" id="owners-grid"></div>
-    <div class="slabel">All Entries — Global View</div>
-    <table class="gtable"><thead><tr><th>Date</th><th>Owner</th><th>Module</th><th>Issue / Topic</th><th>Priority</th><th>Status</th><th>Fields</th></tr></thead>
+    <div class="slabel" data-i="global_view">All Entries — Global View</div>
+    <table class="gtable"><thead><tr><th data-i="th_date">Date</th><th data-i="th_owner">Owner</th><th>Module</th><th data-i="th_issue">Issue / Topic</th><th data-i="th_logged_by">Logged by</th><th data-i="th_prio">Priority</th><th>Status</th><th data-i="th_fields">Fields</th></tr></thead>
     <tbody id="gtbody"></tbody></table>
   </div>
 </div>
@@ -285,7 +331,10 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 <div class="view" id="view-owner">
   <div class="topbar">
     <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title" id="ov-title"></div></div>
-    <div class="tb-right"><button class="btn-back" onclick="goHome()">← All Contributors</button></div>
+    <div class="tb-right">
+      <button class="btn-lang" onclick="toggleLang()">FR/EN</button>
+      <button class="btn-back" onclick="goHome()">← <span data-i="back_contributors">All Contributors</span></button>
+    </div>
   </div>
   <div class="wrap">
     <div class="bc"><span class="bc-lnk" onclick="goHome()">Home</span><span class="bc-sep">›</span><span class="bc-cur" id="ov-bc"></span></div>
@@ -297,36 +346,38 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 <div class="view" id="view-module">
   <div class="topbar">
     <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title" id="mv-title"></div></div>
-    <div class="tb-right"><button class="btn-back" onclick="goOwner()">← Back to Owner</button></div>
+    <div class="tb-right">
+      <button class="btn-lang" onclick="toggleLang()">FR/EN</button>
+      <button class="btn-back" onclick="goOwner()">← <span data-i="back_owner">Back to Owner</span></button>
+    </div>
   </div>
   <div class="wrap">
     <div class="bc"><span class="bc-lnk" onclick="goHome()">Home</span><span class="bc-sep">›</span><span class="bc-lnk" id="mv-owner-bc" onclick="goOwner()"></span><span class="bc-sep">›</span><span class="bc-cur" id="mv-bc"></span></div>
-    <div class="loading-banner" id="mod-loading"><div class="loading-dot"></div> Saving to SharePoint…</div>
+    <div class="loading-banner" id="mod-loading"><div class="loading-dot"></div> <span data-i="saving">Saving…</span></div>
     <div class="mod-hdr" id="mv-hdr">
       <div><h2 id="mv-hdr-title"></h2><p id="mv-hdr-sub"></p></div>
-      <div class="mod-hdr-r"><div class="mod-hdr-cnt" id="mv-count">0</div><div class="mod-hdr-lbl">entries</div></div>
+      <div class="mod-hdr-r"><div class="mod-hdr-cnt" id="mv-count">0</div><div class="mod-hdr-lbl" data-i="entries">entries</div></div>
     </div>
-    <div class="slabel">Log New Entry</div>
+    <div class="slabel" data-i="log_entry">Log New Entry</div>
     <div class="eform">
-      <div class="fhead"><span>New Entry</span><span id="form-today" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent)"></span></div>
+      <div class="fhead"><span data-i="new_entry">New Entry</span><span id="form-today" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent)"></span></div>
       <div class="frow1">
         <input type="date" id="f-date">
         <input type="text" id="f-issue" placeholder="Issue / ticket / topic title…">
+        <select id="f-logged-by"><option value="" data-i="logged_by_ph">Logged by…</option></select>
         <select id="f-prio-entry" onchange="this.className=this.value"><option value="">Priority</option><option value="high">🔴 High</option><option value="med">🟡 Med</option><option value="low">🟢 Low</option></select>
         <select id="f-status-entry" onchange="this.className=this.value"><option value="open">🔵 Open</option><option value="inprogress">🟡 In Progress</option><option value="resolved">🟢 Resolved</option></select>
       </div>
       <div class="frow2">
-        <div class="fta"><div class="fta-lbl">📌 Agenda / Decision needed</div><textarea id="f-agenda" placeholder="What needs to be discussed or decided?"></textarea></div>
-        <div class="fta"><div class="fta-lbl">⚙️ System improvement idea</div><textarea id="f-impr" placeholder="What should go in the backlog?"></textarea></div>
-        <div class="fta"><div class="fta-lbl">💬 Comments / Context</div><textarea id="f-comment" placeholder="Root cause, workaround, context…"></textarea></div>
+        <div class="fta"><div class="fta-lbl">📌 <span data-i="agenda_lbl">Agenda / Decision needed</span></div><textarea id="f-agenda" placeholder="What needs to be discussed or decided?"></textarea></div>
+        <div class="fta"><div class="fta-lbl">⚙️ <span data-i="impr_lbl">System improvement idea</span></div><textarea id="f-impr" placeholder="What should go in the backlog? → auto-added"></textarea></div>
+        <div class="fta"><div class="fta-lbl">💬 <span data-i="comment_lbl">Comments / Context</span></div><textarea id="f-comment" placeholder="Root cause, workaround, context…"></textarea></div>
       </div>
-      <div class="ffoot"><span class="fnote">Date and issue title are required.</span><button class="btn-save" id="btn-save-entry" onclick="saveEntry()">✓ Save Entry</button></div>
+      <div class="ffoot"><span class="fnote" data-i="form_note">Date and issue title are required.</span><button class="btn-save" id="btn-save-entry" onclick="saveEntry()" data-i="save_entry">✓ Save Entry</button></div>
     </div>
     <div class="hist-tb">
-      <div class="slabel" style="flex:1;margin-bottom:0">Entry History</div>
-      <div style="display:flex;gap:8px">
-        <button class="btn-sm-outline" onclick="exportModule()">⬇ Export module (.xlsx)</button>
-      </div>
+      <div class="slabel" style="flex:1;margin-bottom:0" data-i="entry_history">Entry History</div>
+      <button class="btn-sm-outline" onclick="exportModule()">⬇ Export (.xlsx)</button>
     </div>
     <div id="hist-list"></div>
   </div>
@@ -335,21 +386,26 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 <!-- ════ DASHBOARD ════ -->
 <div class="view" id="view-dash">
   <div class="topbar">
-    <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title">Dashboard — Analytics</div></div>
-    <div class="tb-right"><button class="btn-back" onclick="goHome()">← Home</button></div>
+    <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title" data-i="dash_title">Dashboard — Analytics</div></div>
+    <div class="tb-right"><button class="btn-lang" onclick="toggleLang()">FR/EN</button><button class="btn-back" onclick="goHome()">← Home</button></div>
   </div>
   <div class="wrap">
     <div class="bc"><span class="bc-lnk" onclick="goHome()">Home</span><span class="bc-sep">›</span><span class="bc-cur">Dashboard</span></div>
     <div style="margin-top:16px"></div>
     <div class="dash-grid" id="dash-kpis"></div>
     <div class="chart-grid">
-      <div class="chart-card"><h3>By Module</h3><div id="chart-module"></div></div>
-      <div class="chart-card"><h3>By Priority</h3><div id="chart-prio"></div></div>
-      <div class="chart-card"><h3>By Status</h3><div id="chart-status"></div></div>
-      <div class="chart-card"><h3>By Owner</h3><div id="chart-owner"></div></div>
+      <div class="chart-card"><h3 data-i="by_module">By Module</h3><div id="chart-module"></div></div>
+      <div class="chart-card"><h3 data-i="by_prio">By Priority</h3><div id="chart-prio"></div></div>
+      <div class="chart-card"><h3 data-i="by_status">By Status</h3><div id="chart-status"></div></div>
+      <div class="chart-card"><h3 data-i="by_owner">By Owner</h3><div id="chart-owner"></div></div>
     </div>
-    <div class="slabel">High Priority — Open Items</div>
-    <table class="gtable"><thead><tr><th>Date</th><th>Owner</th><th>Module</th><th>Issue</th><th>Priority</th><th>Status</th></tr></thead>
+    <div class="slabel" data-i="backlog_analytics">Backlog — By Status</div>
+    <div class="chart-grid" style="margin-bottom:28px">
+      <div class="chart-card"><h3 data-i="backlog_status">Backlog Status</h3><div id="chart-backlog-status"></div></div>
+      <div class="chart-card"><h3 data-i="backlog_module">Backlog by Module</h3><div id="chart-backlog-module"></div></div>
+    </div>
+    <div class="slabel" data-i="high_open">High Priority — Open Items</div>
+    <table class="gtable"><thead><tr><th data-i="th_date">Date</th><th data-i="th_owner">Owner</th><th>Module</th><th data-i="th_issue">Issue</th><th data-i="th_prio">Priority</th><th>Status</th></tr></thead>
     <tbody id="dash-high"></tbody></table>
   </div>
 </div>
@@ -357,45 +413,61 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 <!-- ════ SESSION VIEW ════ -->
 <div class="view" id="view-session">
   <div class="topbar">
-    <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title">Session View — Agenda Builder</div></div>
+    <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title" data-i="session_title">Session View — Agenda Builder</div></div>
     <div class="tb-right">
+      <button class="btn-lang" onclick="toggleLang()">FR/EN</button>
       <button class="btn-back" onclick="goHome()">← Home</button>
-      <button class="btn-accent" onclick="exportSessionPDF()">⬇ Export Agenda PDF</button>
+      <button class="btn-accent" onclick="exportSessionPDF()">⬇ Export PDF</button>
     </div>
   </div>
   <div class="wrap">
-    <div class="bc"><span class="bc-lnk" onclick="goHome()">Home</span><span class="bc-sep">›</span><span class="bc-cur">Session View</span></div>
+    <div class="bc"><span class="bc-lnk" onclick="goHome()">Home</span><span class="bc-sep">›</span><span class="bc-cur" data-i="session_title">Session View</span></div>
     <div class="session-header" style="margin-top:16px">
-      <div><h2>Next Session Agenda</h2><p id="session-subtitle">Auto-generated from all High priority open items</p></div>
+      <div><h2 data-i="next_session">Next Session Agenda</h2><p data-i="session_sub">Auto-generated from all High priority open items</p></div>
       <div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(255,255,255,.4)" id="session-date"></div>
     </div>
-    <div class="slabel">🔴 High Priority — Open & In Progress</div>
+    <div class="slabel">🔴 <span data-i="high_open_in">High Priority — Open & In Progress</span></div>
     <div id="session-high"></div>
-    <div class="slabel" style="margin-top:24px">🟡 Medium Priority — For Discussion</div>
+    <div class="slabel" style="margin-top:24px">🟡 <span data-i="med_discuss">Medium Priority — For Discussion</span></div>
     <div id="session-med"></div>
-    <div class="slabel" style="margin-top:24px">⚙️ Improvement Backlog — Items in Flight</div>
+    <div class="slabel" style="margin-top:24px">⚙️ <span data-i="backlog_flight">Improvement Backlog — Items in Flight</span></div>
     <div id="session-backlog"></div>
+    <div class="slabel" style="margin-top:24px">✅ <span data-i="discussed">Recently Discussed in Session</span></div>
+    <div id="session-discussed"></div>
   </div>
 </div>
 
 <!-- ════ BACKLOG ════ -->
 <div class="view" id="view-backlog">
   <div class="topbar">
-    <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title">System Improvement Backlog</div></div>
-    <div class="tb-right"><button class="btn-back" onclick="goHome()">← Home</button></div>
+    <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title" data-i="backlog_title">System Improvement Backlog</div></div>
+    <div class="tb-right"><button class="btn-lang" onclick="toggleLang()">FR/EN</button><button class="btn-back" onclick="goHome()">← Home</button></div>
   </div>
   <div class="wrap">
-    <div class="bc"><span class="bc-lnk" onclick="goHome()">Home</span><span class="bc-sep">›</span><span class="bc-cur">Backlog</span></div>
+    <div class="bc"><span class="bc-lnk" onclick="goHome()">Home</span><span class="bc-sep">›</span><span class="bc-cur" data-i="backlog_title">Backlog</span></div>
     <div style="margin-top:16px"></div>
-    <div class="slabel">Add Improvement</div>
+    <div class="slabel" data-i="add_improvement">Add Improvement</div>
     <div class="bl-form">
-      <div><label>Improvement Title</label><input type="text" id="bl-title" placeholder="Describe the system improvement…"></div>
+      <div><label data-i="bl_title_lbl">Improvement Title</label><input type="text" id="bl-title" placeholder="Describe the system improvement…"></div>
       <div><label>Module</label><select id="bl-mod"><option value="">Select module</option></select></div>
-      <div><label>Owner (Strada)</label><input type="text" id="bl-owner" placeholder="Strada owner…"></div>
-      <div><label>Priority</label><select id="bl-prio"><option value="">—</option><option value="high">🔴 High</option><option value="med">🟡 Med</option><option value="low">🟢 Low</option></select></div>
-      <div><label>&nbsp;</label><button class="btn-save" style="width:100%;padding:7px" onclick="addBacklog()">+ Add</button></div>
+      <div><label data-i="bl_owner_lbl">Owner (Strada)</label><input type="text" id="bl-owner" placeholder="Strada owner…"></div>
+      <div><label data-i="bl_prio_lbl">Priority</label><select id="bl-prio"><option value="">—</option><option value="high">🔴 High</option><option value="med">🟡 Med</option><option value="low">🟢 Low</option></select></div>
+      <div><label>&nbsp;</label><button class="btn-save" style="width:100%;padding:7px" onclick="addBacklog()" data-i="add_btn">+ Add</button></div>
     </div>
-    <div class="slabel">Backlog Items</div>
+    <div class="slabel" data-i="backlog_items">Backlog Items</div>
+    <div class="bl-filter-bar">
+      <input type="text" id="bl-search" placeholder="🔍 Search backlog…" oninput="renderBacklog()">
+      <select id="bl-filter-status" onchange="renderBacklog()">
+        <option value="">All statuses</option>
+        <option value="not_started">Not started</option>
+        <option value="in_progress">In progress</option>
+        <option value="resource_validation">Resource validation</option>
+        <option value="finalised">Finalised</option>
+        <option value="cancelled">Cancelled</option>
+        <option value="dropped">Dropped</option>
+      </select>
+      <select id="bl-filter-mod" onchange="renderBacklog()"><option value="">All modules</option></select>
+    </div>
     <div id="bl-list"></div>
   </div>
 </div>
@@ -406,8 +478,6 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 // ══════════════════════════════════════════════════════════════
 const SUPABASE_URL = 'https://nbejkjuyfdvaavstesva.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_JysBxxE_qnHgq09f58TvRQ_9Pk8uBKd';
-const TABLE = 'ticket_entries';
-
 const SB_HEADERS = {
   'Content-Type':  'application/json',
   'apikey':        SUPABASE_KEY,
@@ -416,106 +486,70 @@ const SB_HEADERS = {
 };
 
 // ══════════════════════════════════════════════════════════════
-// API LAYER — Supabase REST
+// I18N
 // ══════════════════════════════════════════════════════════════
-
-async function fetchAllEntries() {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 8000);
-  try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?select=*&order=created_at.desc&limit=5000`, {
-      headers: SB_HEADERS,
-      signal: controller.signal
-    });
-    if (!r.ok) throw new Error(`Supabase GET returned ${r.status}`);
-    const data = await r.json();
-    return data.map(normalise);
-  } finally {
-    clearTimeout(timeout);
+let lang = 'en';
+const T = {
+  en: {
+    app_title:'Ticket Review — Input Collection', nav_dash:'📊 Dashboard', nav_session:'📋 Session View',
+    nav_backlog:'⚙️ Backlog', nav_export:'⬇ Export All', loading:'Loading data…', saving:'Saving…',
+    how_works_title:'How it works:', how_works_body:'Click an owner to browse their modules. Every entry is dated, timestamped and versioned.',
+    all_owners:'All owners', all_modules:'All modules', all_prios:'All priorities', all_statuses:'All statuses',
+    contributors:'Contributors', global_view:'All Entries — Global View',
+    th_date:'Date', th_owner:'Owner', th_issue:'Issue / Topic', th_logged_by:'Logged by', th_prio:'Priority', th_fields:'Fields',
+    back_contributors:'All Contributors', back_owner:'Back to Owner',
+    log_entry:'Log New Entry', new_entry:'New Entry', logged_by_ph:'Logged by…',
+    agenda_lbl:'Agenda / Decision needed', impr_lbl:'System improvement idea', comment_lbl:'Comments / Context',
+    form_note:'Date and issue title are required.', save_entry:'✓ Save Entry',
+    entry_history:'Entry History', entries:'entries',
+    dash_title:'Dashboard — Analytics', by_module:'By Module', by_prio:'By Priority',
+    by_status:'By Status', by_owner:'By Owner', backlog_analytics:'Backlog Analytics',
+    backlog_status:'Backlog Status', backlog_module:'Backlog by Module', high_open:'High Priority — Open Items',
+    session_title:'Session View — Agenda Builder', next_session:'Next Session Agenda',
+    session_sub:'Auto-generated from all High priority open items',
+    high_open_in:'High Priority — Open & In Progress', med_discuss:'Medium Priority — For Discussion',
+    backlog_flight:'Improvement Backlog — Items in Flight', discussed:'Recently Discussed in Session',
+    backlog_title:'System Improvement Backlog', add_improvement:'Add Improvement',
+    bl_title_lbl:'Improvement Title', bl_owner_lbl:'Owner (Strada)', bl_prio_lbl:'Priority', add_btn:'+ Add',
+    backlog_items:'Backlog Items', session_date_lbl:'Session Date', session_notes_lbl:'Session Notes',
+    mark_session:'Mark as discussed', not_started:'Not started', in_progress:'In progress',
+    resource_validation:'Resource validation', finalised:'Finalised', cancelled:'Cancelled', dropped:'Dropped',
+    total_entries:'Total Entries', high_prio:'High Priority', open_lbl:'Open', resolved_lbl:'Resolved',
+    resolution_rate:'resolution rate', last_updated:'Updated'
+  },
+  fr: {
+    app_title:'Revue de tickets — Saisie', nav_dash:'📊 Tableau de bord', nav_session:'📋 Vue session',
+    nav_backlog:'⚙️ Backlog', nav_export:'⬇ Exporter', loading:'Chargement…', saving:'Enregistrement…',
+    how_works_title:'Comment ça marche :', how_works_body:'Cliquez sur un propriétaire pour parcourir ses modules. Chaque entrée est datée et horodatée.',
+    all_owners:'Tous les propriétaires', all_modules:'Tous les modules', all_prios:'Toutes les priorités', all_statuses:'Tous les statuts',
+    contributors:'Contributeurs', global_view:'Toutes les entrées — Vue globale',
+    th_date:'Date', th_owner:'Propriétaire', th_issue:'Sujet', th_logged_by:'Saisi par', th_prio:'Priorité', th_fields:'Champs',
+    back_contributors:'Tous les contributeurs', back_owner:'Retour',
+    log_entry:'Nouvelle entrée', new_entry:'Nouvelle entrée', logged_by_ph:'Saisi par…',
+    agenda_lbl:'Agenda / Décision', impr_lbl:'Amélioration système', comment_lbl:'Commentaires / Contexte',
+    form_note:'Date et sujet requis.', save_entry:'✓ Enregistrer',
+    entry_history:'Historique', entries:'entrées',
+    dash_title:'Tableau de bord', by_module:'Par module', by_prio:'Par priorité',
+    by_status:'Par statut', by_owner:'Par propriétaire', backlog_analytics:'Analytique Backlog',
+    backlog_status:'Statut Backlog', backlog_module:'Backlog par module', high_open:'Priorité haute — En cours',
+    session_title:'Vue session — Ordre du jour', next_session:'Prochaine session',
+    session_sub:'Généré depuis les items haute priorité ouverts',
+    high_open_in:'Haute priorité — Ouverts & En cours', med_discuss:'Priorité moyenne — Pour discussion',
+    backlog_flight:'Backlog — En cours', discussed:'Discutés récemment en session',
+    backlog_title:'Backlog améliorations système', add_improvement:'Ajouter une amélioration',
+    bl_title_lbl:'Titre', bl_owner_lbl:'Responsable (Strada)', bl_prio_lbl:'Priorité', add_btn:'+ Ajouter',
+    backlog_items:'Items du backlog', session_date_lbl:'Date de session', session_notes_lbl:'Notes de session',
+    mark_session:'Marquer comme discuté', not_started:'Non démarré', in_progress:'En cours',
+    resource_validation:'Validation ressources', finalised:'Finalisé', cancelled:'Annulé', dropped:'Abandonné',
+    total_entries:'Total entrées', high_prio:'Haute priorité', open_lbl:'Ouverts', resolved_lbl:'Résolus',
+    resolution_rate:'taux de résolution', last_updated:'Mis à jour'
   }
+};
+function t(key){ return T[lang][key] || T['en'][key] || key; }
+function applyLang(){
+  document.querySelectorAll('[data-i]').forEach(el => { const k = el.dataset.i; if(T[lang][k]) el.textContent = T[lang][k]; });
 }
-
-async function refreshData() {
-  const entries = await fetchAllEntries();
-  store = entries;
-}
-
-async function pushEntry(action, payload) {
-  if (action === 'create') {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}`, {
-      method: 'POST',
-      headers: SB_HEADERS,
-      body: JSON.stringify({
-        owner:       payload.owner,
-        module:      payload.module,
-        entry_date:  payload.date,
-        issue:       payload.issue,
-        priority:    payload.priority,
-        status:      payload.status || 'open',
-        agenda:      payload.agenda,
-        improvement: payload.improvement,
-        comment:     payload.comment
-      })
-    });
-    if (!r.ok) throw new Error(`Supabase POST returned ${r.status}`);
-  }
-
-  if (action === 'update') {
-    const body = {};
-    if (payload.status      !== undefined) body.status      = payload.status;
-    if (payload.issue       !== undefined) body.issue        = payload.issue;
-    if (payload.priority    !== undefined) body.priority     = payload.priority;
-    if (payload.agenda      !== undefined) body.agenda       = payload.agenda;
-    if (payload.improvement !== undefined) body.improvement  = payload.improvement;
-    if (payload.comment     !== undefined) body.comment      = payload.comment;
-    body.modified_at = new Date().toISOString();
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${payload.spId}`, {
-      method: 'PATCH',
-      headers: SB_HEADERS,
-      body: JSON.stringify(body)
-    });
-    if (!r.ok) throw new Error(`Supabase PATCH returned ${r.status}`);
-  }
-
-  if (action === 'delete') {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${payload.spId}`, {
-      method: 'DELETE',
-      headers: SB_HEADERS
-    });
-    if (!r.ok) throw new Error(`Supabase DELETE returned ${r.status}`);
-  }
-}
-
-// Maps Supabase column names → internal app field names.
-function normalise(item) {
-  return {
-    spId:        item.id,
-    date:        item.entry_date || '',
-    owner:       item.owner      || '',
-    module:      item.module     || '',
-    issue:       item.issue      || '',
-    priority:    item.priority   || '',
-    status:      item.status     || 'open',
-    agenda:      item.agenda     || '',
-    improvement: item.improvement || '',
-    comment:     item.comment    || '',
-    savedAt:     item.created_at  ? new Date(item.created_at).getTime()  : Date.now(),
-    modifiedAt:  item.modified_at ? new Date(item.modified_at).getTime() : null,
-  };
-}
-
-// ══════════════════════════════════════════════════════════════
-// IN-MEMORY STORE
-// Single source of truth while the page is open.
-// All reads come from here; all writes go to SharePoint then update here.
-// ══════════════════════════════════════════════════════════════
-let store = []; // flat array of all entries across all owners & modules
-
-function getCached(ownerId, mod) {
-  return store.filter(e => e.owner === ownerId && e.module === mod);
-}
-function allEntries() { return store; }
-function total(ownerId) { return store.filter(e => e.owner === ownerId).length; }
+function toggleLang(){ lang = lang === 'en' ? 'fr' : 'en'; applyLang(); }
 
 // ══════════════════════════════════════════════════════════════
 // CONFIG
@@ -527,62 +561,170 @@ const OWNERS = [
   {id:'marta',  initials:'MZ',color:'#B05A20',name:'Marta Zelazniewicz',role:'IS HR & Legal Domain Manager',modules:['PA','FREE']},
   {id:'jerome', initials:'JP',color:'#1A7A7A',name:'Jerome Potier',     role:'Group HRIS Director',modules:['PA','FREE']}
 ];
-
 const MOD_LABELS = {
   COMP:'Compensation',VP:'Variable Pay',EC:'Employee Central',ONB:'Onboarding',
   PMGM:'Performance & Goals',CPM:'Continuous Performance','S&D':'Succession & Development',
   CDP:'Career Dev. Planning',RCM:'Recruiting',RMK:'Recruiting Marketing',PA:'People Analytics',FREE:'Free Topic'
 };
+const BL_STATUSES = {
+  not_started:'Not started', in_progress:'In progress', resource_validation:'Resource validation',
+  finalised:'Finalised', cancelled:'Cancelled', dropped:'Dropped'
+};
 
-let backlogItems = [];
+let store = [];
+let backlogStore = [];
 let curOwner = null, curMod = null;
+let lastUpdated = null;
+let modalEntryId = null;
 
 // ══════════════════════════════════════════════════════════════
-// INIT — loads all data once on page open
+// API — ENTRIES
+// ══════════════════════════════════════════════════════════════
+async function fetchAllEntries() {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/ticket_entries?select=*&order=created_at.desc&limit=5000`, { headers: SB_HEADERS, signal: controller.signal });
+    if (!r.ok) throw new Error(`Supabase GET ${r.status}`);
+    return (await r.json()).map(normaliseEntry);
+  } finally { clearTimeout(timeout); }
+}
+
+async function refreshData() {
+  const [entries, backlog] = await Promise.all([fetchAllEntries(), fetchBacklog()]);
+  store = entries; backlogStore = backlog;
+  lastUpdated = new Date();
+  updateLastUpdatedLabel();
+}
+
+function updateLastUpdatedLabel() {
+  if (!lastUpdated) return;
+  const el = document.getElementById('last-updated-home');
+  if (el) el.textContent = `${t('last_updated')}: ${lastUpdated.toLocaleTimeString()}`;
+}
+
+function normaliseEntry(item) {
+  return {
+    spId: item.id, date: item.entry_date || '', owner: item.owner || '',
+    module: item.module || '', issue: item.issue || '', priority: item.priority || '',
+    status: item.status || 'open', agenda: item.agenda || '', improvement: item.improvement || '',
+    comment: item.comment || '', loggedBy: item.logged_by || '',
+    sessionDate: item.session_date || null, sessionNotes: item.session_notes || '',
+    savedAt: item.created_at ? new Date(item.created_at).getTime() : Date.now(),
+    modifiedAt: item.modified_at ? new Date(item.modified_at).getTime() : null,
+  };
+}
+
+async function pushEntry(action, payload) {
+  if (action === 'create') {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/ticket_entries`, {
+      method: 'POST', headers: SB_HEADERS,
+      body: JSON.stringify({ owner: payload.owner, module: payload.module, entry_date: payload.date,
+        issue: payload.issue, priority: payload.priority, status: payload.status || 'open',
+        agenda: payload.agenda, improvement: payload.improvement, comment: payload.comment,
+        logged_by: payload.loggedBy })
+    });
+    if (!r.ok) throw new Error(`Supabase POST ${r.status}`);
+    const created = await r.json();
+    return normaliseEntry(Array.isArray(created) ? created[0] : created);
+  }
+  if (action === 'update') {
+    const body = {}; const fields = ['status','issue','priority','agenda','improvement','comment','session_date','session_notes'];
+    if (payload.status      !== undefined) body.status        = payload.status;
+    if (payload.issue       !== undefined) body.issue         = payload.issue;
+    if (payload.priority    !== undefined) body.priority      = payload.priority;
+    if (payload.agenda      !== undefined) body.agenda        = payload.agenda;
+    if (payload.improvement !== undefined) body.improvement   = payload.improvement;
+    if (payload.comment     !== undefined) body.comment       = payload.comment;
+    if (payload.sessionDate !== undefined) body.session_date  = payload.sessionDate;
+    if (payload.sessionNotes!== undefined) body.session_notes = payload.sessionNotes;
+    body.modified_at = new Date().toISOString();
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/ticket_entries?id=eq.${payload.spId}`, { method: 'PATCH', headers: SB_HEADERS, body: JSON.stringify(body) });
+    if (!r.ok) throw new Error(`Supabase PATCH ${r.status}`);
+  }
+  if (action === 'delete') {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/ticket_entries?id=eq.${payload.spId}`, { method: 'DELETE', headers: SB_HEADERS });
+    if (!r.ok) throw new Error(`Supabase DELETE ${r.status}`);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// API — BACKLOG
+// ══════════════════════════════════════════════════════════════
+async function fetchBacklog() {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/backlog_items?select=*&order=created_at.desc`, { headers: SB_HEADERS });
+  if (!r.ok) throw new Error(`Backlog GET ${r.status}`);
+  return await r.json();
+}
+
+async function pushBacklog(action, payload) {
+  if (action === 'create') {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/backlog_items`, {
+      method: 'POST', headers: SB_HEADERS,
+      body: JSON.stringify({ title: payload.title, module: payload.module, owner: payload.owner,
+        priority: payload.priority || 'med', status: payload.status || 'not_started', entry_id: payload.entry_id || null })
+    });
+    if (!r.ok) throw new Error(`Backlog POST ${r.status}`);
+  }
+  if (action === 'update') {
+    const body = { modified_at: new Date().toISOString() };
+    if (payload.status   !== undefined) body.status   = payload.status;
+    if (payload.priority !== undefined) body.priority = payload.priority;
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/backlog_items?id=eq.${payload.id}`, { method: 'PATCH', headers: SB_HEADERS, body: JSON.stringify(body) });
+    if (!r.ok) throw new Error(`Backlog PATCH ${r.status}`);
+  }
+  if (action === 'delete') {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/backlog_items?id=eq.${payload.id}`, { method: 'DELETE', headers: SB_HEADERS });
+    if (!r.ok) throw new Error(`Backlog DELETE ${r.status}`);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════════
+function getCached(oid, mod) { return store.filter(e => e.owner === oid && e.module === mod); }
+function allEntries() { return store; }
+function total(oid) { return store.filter(e => e.owner === oid).length; }
+function allEntriesWithMeta() {
+  return store.map(e => { const o = OWNERS.find(x => x.id === e.owner); return o ? { o, m: e.module, e } : null; }).filter(Boolean);
+}
+function blStatusLabel(s) { return t(s) || BL_STATUSES[s] || s; }
+
+// ══════════════════════════════════════════════════════════════
+// TOAST / LOADING / ERROR
+// ══════════════════════════════════════════════════════════════
+function toast(msg, err = false) {
+  const t2 = document.createElement('div'); t2.className = 'toast';
+  t2.style.background = err ? '#C02A2A' : '#0D1B2A'; t2.textContent = msg;
+  document.body.appendChild(t2); setTimeout(() => t2.remove(), 3200);
+}
+function setLoading(id, v) { const el = document.getElementById(id); if (el) el.classList.toggle('visible', v); }
+function setError(id, v, msg = '') {
+  const el = document.getElementById(id); if (!el) return;
+  el.classList.toggle('visible', v);
+  if (msg) { const m = document.getElementById(id + '-msg'); if (m) m.textContent = msg; }
+}
+
+// ══════════════════════════════════════════════════════════════
+// INIT
 // ══════════════════════════════════════════════════════════════
 async function initData() {
-  setLoading('home-loading', true);
-  setError('home-error', false);
+  setLoading('home-loading', true); setError('home-error', false);
   try {
-    const entries = await fetchAllEntries();
-    store = entries;
+    await refreshData();
   } catch (err) {
     console.error('initData failed:', err);
     setError('home-error', true, 'Could not load data from Supabase. ' + err.message);
   } finally {
     setLoading('home-loading', false);
-    renderHome(); // always show owner cards, even if Supabase unreachable
+    renderHome();
   }
-}
-
-// ══════════════════════════════════════════════════════════════
-// TOAST / LOADING / ERROR HELPERS
-// ══════════════════════════════════════════════════════════════
-function toast(msg, err = false) {
-  const t = document.createElement('div');
-  t.className = 'toast';
-  t.style.background = err ? '#C02A2A' : '#0D1B2A';
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 3200);
-}
-
-function setLoading(id, visible) {
-  const el = document.getElementById(id);
-  if (el) el.classList.toggle('visible', visible);
-}
-
-function setError(id, visible, msg = '') {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.classList.toggle('visible', visible);
-  if (msg) { const m = document.getElementById(id + '-msg'); if (m) m.textContent = msg; }
 }
 
 // ══════════════════════════════════════════════════════════════
 // NAV
 // ══════════════════════════════════════════════════════════════
-function show(id) { document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.getElementById('view-' + id).classList.add('active'); window.scrollTo(0, 0); }
+function show(id) { document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.getElementById('view-' + id).classList.add('active'); window.scrollTo(0,0); }
 function goHome()    { renderHome();    show('home'); }
 function goOwner()   { renderOwner(curOwner); show('owner'); }
 function goDash()    { renderDash();    show('dash'); }
@@ -593,75 +735,70 @@ function goBacklog() { renderBacklog(); show('backlog'); }
 // FILTERS
 // ══════════════════════════════════════════════════════════════
 function applyFilters() {
-  const search = document.getElementById('f-search').value.toLowerCase();
-  const owner  = document.getElementById('f-owner').value;
-  const module = document.getElementById('f-module').value;
-  const prio   = document.getElementById('f-prio').value;
-  const status = document.getElementById('f-status').value;
-  renderGlobal({ search, owner, module, prio, status });
+  renderGlobal({ search: document.getElementById('f-search').value.toLowerCase(),
+    owner: document.getElementById('f-owner').value, module: document.getElementById('f-module').value,
+    prio: document.getElementById('f-prio').value, status: document.getElementById('f-status').value });
 }
 function clearFilters() {
-  ['f-search','f-owner','f-module','f-prio','f-status'].forEach(id => { const el = document.getElementById(id); if (el.tagName === 'INPUT') el.value = ''; else el.selectedIndex = 0; });
+  ['f-search','f-owner','f-module','f-prio','f-status'].forEach(id => { const el=document.getElementById(id); if(el.tagName==='INPUT') el.value=''; else el.selectedIndex=0; });
   renderGlobal({});
 }
+
 function initFilters() {
   const ownerSel = document.getElementById('f-owner');
-  OWNERS.forEach(o => { const op = document.createElement('option'); op.value = o.id; op.textContent = o.name.split(' ')[0]; ownerSel.appendChild(op); });
-  const modSel = document.getElementById('f-module');
-  Object.entries(MOD_LABELS).forEach(([k, v]) => { const op = document.createElement('option'); op.value = k; op.textContent = `${k} — ${v}`; modSel.appendChild(op); });
-  const blMod = document.getElementById('bl-mod');
-  Object.entries(MOD_LABELS).forEach(([k, v]) => { const op = document.createElement('option'); op.value = k; op.textContent = `${k} — ${v}`; blMod.appendChild(op); });
+  OWNERS.forEach(o => { const op=document.createElement('option'); op.value=o.id; op.textContent=o.name.split(' ')[0]; ownerSel.appendChild(op); });
+  ['f-module','bl-mod','bl-filter-mod'].forEach(selId => {
+    const sel = document.getElementById(selId); if(!sel) return;
+    Object.entries(MOD_LABELS).forEach(([k,v]) => { const op=document.createElement('option'); op.value=k; op.textContent=`${k} — ${v}`; sel.appendChild(op); });
+  });
+  const loggedBySel = document.getElementById('f-logged-by');
+  OWNERS.forEach(o => { const op=document.createElement('option'); op.value=o.id; op.textContent=o.name.split(' ')[0]; loggedBySel.appendChild(op); });
 }
 
 // ══════════════════════════════════════════════════════════════
 // HOME
 // ══════════════════════════════════════════════════════════════
 function renderHome() {
-  const grid = document.getElementById('owners-grid');
-  grid.innerHTML = '';
+  const grid = document.getElementById('owners-grid'); grid.innerHTML = '';
   OWNERS.forEach((o, i) => {
     const cnt = total(o.id);
-    const allE = store.filter(e => e.owner === o.id).sort((a, b) => b.savedAt - a.savedAt);
+    const allE = store.filter(e => e.owner === o.id).sort((a,b) => b.savedAt - a.savedAt);
     const lastD = allE.length ? allE[0].date || '—' : null;
-    const card = document.createElement('div');
-    card.className = 'owner-card'; card.style.animationDelay = (i * .06) + 's';
+    const card = document.createElement('div'); card.className = 'owner-card'; card.style.animationDelay = (i*.06)+'s';
     card.onclick = () => { curOwner = o.id; renderOwner(o.id); show('owner'); };
     const pills = o.modules.map(m => {
-      const isPA = m === 'PA', isFREE = m === 'FREE';
-      const cls = isPA ? ' pa' : isFREE ? ' free' : '';
-      return `<span class="chip${cls}" style="color:${o.color};border-color:${o.color}" onclick="event.stopPropagation();openMod('${o.id}','${m}')" title="${MOD_LABELS[m] || m}">${isFREE ? '+ Free Topic' : m}</span>`;
+      const isPA=m==='PA', isFREE=m==='FREE', cls=isPA?' pa':isFREE?' free':'';
+      return `<span class="chip${cls}" style="color:${o.color};border-color:${o.color}" onclick="event.stopPropagation();openMod('${o.id}','${m}')" title="${MOD_LABELS[m]||m}">${isFREE?'+ Free Topic':m}</span>`;
     }).join('');
     card.innerHTML = `<div class="oc-head"><div class="ava" style="background:${o.color}">${o.initials}</div><div><div class="ava-name">${o.name}</div><div class="ava-role">${o.role}</div></div></div>
     <div class="chips">${pills}</div>
-    <div class="oc-footer"><div class="oc-count"><strong>${cnt}</strong> entr${cnt === 1 ? 'y' : 'ies'}</div><div class="oc-last">${lastD ? 'Last: ' + lastD : 'No entries yet'}</div></div>`;
+    <div class="oc-footer"><div class="oc-count"><strong>${cnt}</strong> entr${cnt===1?'y':'ies'}</div><div class="oc-last">${lastD?'Last: '+lastD:'No entries yet'}</div></div>`;
     grid.appendChild(card);
   });
+  updateLastUpdatedLabel();
   renderGlobal({});
 }
 
 function renderGlobal(f = {}) {
-  const tbody = document.getElementById('gtbody');
-  tbody.innerHTML = '';
-  let rows = store.map(e => {
-    const o = OWNERS.find(x => x.id === e.owner);
-    return o ? { o, m: e.module, e } : null;
-  }).filter(Boolean);
-  rows.sort((a, b) => (b.e.date || '').localeCompare(a.e.date || ''));
-  if (f.search) rows = rows.filter(({ o, m, e }) => `${e.issue} ${o.name} ${m}`.toLowerCase().includes(f.search));
-  if (f.owner)  rows = rows.filter(({ o }) => o.id === f.owner);
-  if (f.module) rows = rows.filter(({ m }) => m === f.module);
-  if (f.prio)   rows = rows.filter(({ e }) => e.priority === f.prio);
-  if (f.status) rows = rows.filter(({ e }) => (e.status || 'open') === f.status);
-  if (!rows.length) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--muted);font-style:italic;padding:24px">No entries${Object.values(f).some(Boolean) ? ' matching filters' : ' yet'}.</td></tr>`; return; }
-  rows.forEach(({ o, m, e }) => {
-    const pr = e.priority, st = e.status || 'open';
-    const pbadge = pr ? `<span class="prio-badge pb-${pr}">${pr.toUpperCase()}</span>` : '—';
-    const sbadge = `<span class="sbadge sb-${st}">${st === 'inprogress' ? 'In Progress' : st.charAt(0).toUpperCase() + st.slice(1)}</span>`;
-    const fields = [e.agenda ? '📌' : '', e.improvement ? '⚙️' : '', e.comment ? '💬' : ''].join(' ').trim() || '—';
+  const tbody = document.getElementById('gtbody'); tbody.innerHTML = '';
+  let rows = store.map(e => { const o=OWNERS.find(x=>x.id===e.owner); return o?{o,m:e.module,e}:null; }).filter(Boolean);
+  rows.sort((a,b) => (b.e.date||'').localeCompare(a.e.date||''));
+  if (f.search)  rows = rows.filter(({o,m,e}) => `${e.issue} ${o.name} ${m}`.toLowerCase().includes(f.search));
+  if (f.owner)   rows = rows.filter(({o}) => o.id === f.owner);
+  if (f.module)  rows = rows.filter(({m}) => m === f.module);
+  if (f.prio)    rows = rows.filter(({e}) => e.priority === f.prio);
+  if (f.status)  rows = rows.filter(({e}) => (e.status||'open') === f.status);
+  if (!rows.length) { tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;color:var(--muted);font-style:italic;padding:24px">No entries${Object.values(f).some(Boolean)?' matching filters':' yet'}.</td></tr>`; return; }
+  rows.forEach(({o,m,e}) => {
+    const pr=e.priority, st=e.status||'open';
+    const pbadge = pr?`<span class="prio-badge pb-${pr}">${pr.toUpperCase()}</span>`:'—';
+    const sbadge = `<span class="sbadge sb-${st}">${st==='inprogress'?'In Progress':st.charAt(0).toUpperCase()+st.slice(1)}</span>`;
+    const fields = [e.agenda?'📌':'',e.improvement?'⚙️':'',e.comment?'💬':''].join(' ').trim()||'—';
+    const loggedBy = e.loggedBy ? (OWNERS.find(x=>x.id===e.loggedBy)?.name.split(' ')[0]||e.loggedBy) : '—';
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${e.date || '—'}</td><td>${o.name.split(' ')[0]}</td>
-    <td class="lnk" onclick="openMod('${o.id}','${m}')">${m} <span style="font-weight:400;opacity:.55;font-size:10px">${MOD_LABELS[m] || ''}</span></td>
-    <td>${e.issue || '—'}</td><td>${pbadge}</td><td>${sbadge}</td><td style="font-size:13px">${fields}</td>`;
+    tr.innerHTML = `<td>${e.date||'—'}</td><td>${o.name.split(' ')[0]}</td>
+    <td class="lnk" onclick="openMod('${o.id}','${m}')">${m} <span style="font-weight:400;opacity:.55;font-size:10px">${MOD_LABELS[m]||''}</span></td>
+    <td>${e.issue||'—'}</td><td>${loggedBy}</td><td>${pbadge}</td><td>${sbadge}</td><td style="font-size:13px">${fields}</td>`;
     tbody.appendChild(tr);
   });
 }
@@ -670,7 +807,7 @@ function renderGlobal(f = {}) {
 // OWNER
 // ══════════════════════════════════════════════════════════════
 function renderOwner(oid) {
-  const o = OWNERS.find(x => x.id === oid); curOwner = oid;
+  const o = OWNERS.find(x=>x.id===oid); curOwner = oid;
   document.getElementById('ov-title').textContent = o.name;
   document.getElementById('ov-bc').textContent = o.name;
   const hbar = document.getElementById('ov-hbar');
@@ -678,11 +815,11 @@ function renderOwner(oid) {
   <div class="ohb-info"><h2>${o.name}</h2><p>${o.role}</p><div class="mod-btns" id="ov-mods"></div></div>`;
   const wrap = hbar.querySelector('#ov-mods');
   o.modules.forEach(m => {
-    const cnt = getCached(oid, m).length, isPA = m === 'PA', isFREE = m === 'FREE';
+    const cnt=getCached(oid,m).length, isPA=m==='PA', isFREE=m==='FREE';
     const btn = document.createElement('button');
-    btn.className = `mod-btn${isPA ? ' pa' : isFREE ? ' free' : ''}`;
+    btn.className = `mod-btn${isPA?' pa':isFREE?' free':''}`;
     btn.style.cssText = `color:${o.color};border-color:${o.color}`;
-    btn.innerHTML = `${isFREE ? '+ Free Topic' : m} <span class="mf">${MOD_LABELS[m] || m}</span> <span class="mc">${cnt}</span>`;
+    btn.innerHTML = `${isFREE?'+ Free Topic':m} <span class="mf">${MOD_LABELS[m]||m}</span> <span class="mc">${cnt}</span>`;
     btn.onclick = () => openMod(oid, m); wrap.appendChild(btn);
   });
 }
@@ -692,8 +829,8 @@ function renderOwner(oid) {
 // ══════════════════════════════════════════════════════════════
 function openMod(oid, mod) {
   curOwner = oid; curMod = mod;
-  const o = OWNERS.find(x => x.id === oid), label = MOD_LABELS[mod] || mod, isFREE = mod === 'FREE';
-  const td = isFREE ? label : `${mod} — ${label}`, bc = isFREE ? label : `${mod} · ${label}`;
+  const o = OWNERS.find(x=>x.id===oid), label=MOD_LABELS[mod]||mod, isFREE=mod==='FREE';
+  const td = isFREE?label:`${mod} — ${label}`, bc = isFREE?label:`${mod} · ${label}`;
   document.getElementById('mv-title').textContent = td;
   document.getElementById('mv-owner-bc').textContent = o.name;
   document.getElementById('mv-bc').textContent = bc;
@@ -703,45 +840,53 @@ function openMod(oid, mod) {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('f-date').value = today;
   document.getElementById('form-today').textContent = today;
-  ['f-issue','f-agenda','f-impr','f-comment'].forEach(id => { document.getElementById(id).value = ''; });
-  const ps = document.getElementById('f-prio-entry'); ps.selectedIndex = 0; ps.className = '';
-  const ss = document.getElementById('f-status-entry'); ss.selectedIndex = 0; ss.className = '';
-  show('module');
-  renderHist(oid, mod);
+  ['f-issue','f-agenda','f-impr','f-comment'].forEach(id => { document.getElementById(id).value=''; });
+  const ps=document.getElementById('f-prio-entry'); ps.selectedIndex=0; ps.className='';
+  const ss=document.getElementById('f-status-entry'); ss.selectedIndex=0; ss.className='';
+  document.getElementById('f-logged-by').selectedIndex=0;
+  show('module'); renderHist(oid, mod);
 }
 
 function renderHist(oid, mod) {
-  const entries = getCached(oid, mod).slice().sort((a, b) => (b.date || '').localeCompare(a.date || '') || b.savedAt - a.savedAt);
+  const entries = getCached(oid, mod).slice().sort((a,b) => (b.date||'').localeCompare(a.date||'')||b.savedAt-a.savedAt);
   document.getElementById('mv-count').textContent = entries.length;
   const el = document.getElementById('hist-list');
-  if (!entries.length) { el.innerHTML = `<div class="hist-empty">No entries yet. Use the form above to log the first one.</div>`; return; }
+  if (!entries.length) { el.innerHTML=`<div class="hist-empty">No entries yet. Use the form above to log the first one.</div>`; return; }
   el.innerHTML = '';
   entries.forEach(e => {
-    const pr = e.priority, st = e.status || 'open';
-    const pbadge = pr ? `<span class="prio-badge pb-${pr}">${pr.toUpperCase()}</span>` : '';
-    const sbadge = `<span class="sbadge sb-${st}">${st === 'inprogress' ? 'In Progress' : st.charAt(0).toUpperCase() + st.slice(1)}</span>`;
-    const modLine = e.modifiedAt ? `· Modified ${new Date(e.modifiedAt).toLocaleString()}` : '';
-    const div = document.createElement('div'); div.className = 'h-entry'; div.dataset.id = e.spId;
+    const pr=e.priority, st=e.status||'open';
+    const pbadge = pr?`<span class="prio-badge pb-${pr}">${pr.toUpperCase()}</span>`:'';
+    const sbadge = `<span class="sbadge sb-${st}">${st==='inprogress'?'In Progress':st.charAt(0).toUpperCase()+st.slice(1)}</span>`;
+    const modLine = e.modifiedAt?`· Modified ${new Date(e.modifiedAt).toLocaleString()}`:'';
+    const loggedBy = e.loggedBy?(OWNERS.find(x=>x.id===e.loggedBy)?.name.split(' ')[0]||e.loggedBy):'';
+    const blLinked = backlogStore.find(b=>b.entry_id==e.spId);
+    const sessionTag = e.sessionDate
+      ? `<span class="session-tag" title="${e.sessionNotes||''}">✅ Session ${e.sessionDate}</span>`
+      : `<button class="btn-mark-session" onclick="openSessionModal(${e.spId})">${t('mark_session')}</button>`;
+    const div = document.createElement('div'); div.className='h-entry'; div.dataset.id=e.spId;
     div.innerHTML = `
       <div class="h-head" onclick="toggleH(this)">
-        <span class="h-date">${e.date || '—'}</span>
-        <span class="h-issue">${e.issue || '(no title)'}</span>
+        <span class="h-date">${e.date||'—'}</span>
+        <span class="h-issue">${e.issue||'(no title)'}</span>
         ${pbadge}${sbadge}
+        ${loggedBy?`<span style="font-size:10px;color:var(--muted);background:var(--bg);padding:2px 7px;">${loggedBy}</span>`:''}
+        ${blLinked?`<span style="font-size:10px;color:var(--accent);padding:2px 7px;">⚙️ Backlog</span>`:''}
         <span class="h-tog">▼</span>
       </div>
       <div class="h-body">
-        <div class="h-sec"><h4>📌 Agenda / Decision</h4><p class="${e.agenda ? '' : 'empty'}">${e.agenda || 'Not specified'}</p></div>
-        <div class="h-sec"><h4>⚙️ System Improvement</h4><p class="${e.improvement ? '' : 'empty'}">${e.improvement || 'Not specified'}</p></div>
-        <div class="h-sec"><h4>💬 Comments</h4><p class="${e.comment ? '' : 'empty'}">${e.comment || 'Not specified'}</p></div>
+        <div class="h-sec"><h4>📌 Agenda / Decision</h4><p class="${e.agenda?'':'empty'}">${e.agenda||'Not specified'}</p></div>
+        <div class="h-sec"><h4>⚙️ System Improvement</h4><p class="${e.improvement?'':'empty'}">${e.improvement||'Not specified'}</p>${blLinked?`<div class="bl-link">→ In backlog: ${blLinked.status?blStatusLabel(blLinked.status):''}</div>`:''}</div>
+        <div class="h-sec"><h4>💬 Comments</h4><p class="${e.comment?'':'empty'}">${e.comment||'Not specified'}</p></div>
       </div>
       <div class="h-foot">
         <span class="h-meta">Logged ${new Date(e.savedAt).toLocaleString()} <span style="color:var(--accent)">${modLine}</span></span>
         <div class="h-actions">
+          ${sessionTag}
           <button class="btn-edit" onclick="editEntry(${e.spId})">✏️ Edit</button>
           <select class="status-select" onchange="updateStatus(${e.spId},this.value)" title="Update status">
-            <option value="open"       ${st === 'open'       ? 'selected' : ''}>🔵 Open</option>
-            <option value="inprogress" ${st === 'inprogress' ? 'selected' : ''}>🟡 In Progress</option>
-            <option value="resolved"   ${st === 'resolved'   ? 'selected' : ''}>🟢 Resolved</option>
+            <option value="open" ${st==='open'?'selected':''}>🔵 Open</option>
+            <option value="inprogress" ${st==='inprogress'?'selected':''}>🟡 In Progress</option>
+            <option value="resolved" ${st==='resolved'?'selected':''}>🟢 Resolved</option>
           </select>
           <button class="btn-del" onclick="delEntry(${e.spId})">✕</button>
         </div>
@@ -751,63 +896,71 @@ function renderHist(oid, mod) {
 }
 
 // ══════════════════════════════════════════════════════════════
-// SAVE NEW ENTRY
+// SESSION MODAL
 // ══════════════════════════════════════════════════════════════
-async function saveEntry() {
-  const date  = document.getElementById('f-date').value;
-  const issue = document.getElementById('f-issue').value.trim();
-  if (!date || !issue) { alert('Please fill in the date and issue/topic title.'); return; }
-
-  const btn = document.getElementById('btn-save-entry');
-  btn.textContent = 'Saving…'; btn.disabled = true;
-  setLoading('mod-loading', true);
-
-  const payload = {
-    owner:       curOwner,
-    module:      curMod,
-    date,
-    issue,
-    priority:    document.getElementById('f-prio-entry').value,
-    status:      document.getElementById('f-status-entry').value || 'open',
-    agenda:      document.getElementById('f-agenda').value.trim(),
-    improvement: document.getElementById('f-impr').value.trim(),
-    comment:     document.getElementById('f-comment').value.trim(),
-  };
-
+function openSessionModal(spId) {
+  modalEntryId = spId;
+  const e = store.find(x => x.spId == spId);
+  document.getElementById('modal-session-date').value = e?.sessionDate || new Date().toISOString().split('T')[0];
+  document.getElementById('modal-session-notes').value = e?.sessionNotes || '';
+  document.getElementById('session-modal').classList.add('visible');
+}
+function closeSessionModal() { document.getElementById('session-modal').classList.remove('visible'); modalEntryId=null; }
+async function saveSessionMark() {
+  if (!modalEntryId) return;
+  const sessionDate = document.getElementById('modal-session-date').value;
+  const sessionNotes = document.getElementById('modal-session-notes').value.trim();
   try {
-    await pushEntry('create', payload);
+    await pushEntry('update', { spId: modalEntryId, sessionDate, sessionNotes });
     await refreshData();
-    ['f-issue','f-agenda','f-impr','f-comment'].forEach(id => { document.getElementById(id).value = ''; });
-    const ps = document.getElementById('f-prio-entry'); ps.selectedIndex = 0; ps.className = '';
     renderHist(curOwner, curMod);
-    toast('Entry saved ✓');
-  } catch (err) {
-    console.error('saveEntry failed:', err);
-    toast('Save failed — check your flow URL', true);
-  } finally {
-    btn.textContent = '✓ Save Entry'; btn.disabled = false;
-    setLoading('mod-loading', false);
-  }
+    closeSessionModal(); toast('Session marked ✓');
+  } catch(err) { toast('Failed to save session mark', true); }
 }
 
 // ══════════════════════════════════════════════════════════════
-// UPDATE STATUS (inline dropdown)
+// SAVE ENTRY
+// ══════════════════════════════════════════════════════════════
+async function saveEntry() {
+  const date = document.getElementById('f-date').value;
+  const issue = document.getElementById('f-issue').value.trim();
+  if (!date || !issue) { alert('Please fill in the date and issue/topic title.'); return; }
+  const btn = document.getElementById('btn-save-entry'); btn.textContent='Saving…'; btn.disabled=true;
+  setLoading('mod-loading', true);
+  const improvement = document.getElementById('f-impr').value.trim();
+  const payload = {
+    owner: curOwner, module: curMod, date, issue,
+    priority: document.getElementById('f-prio-entry').value,
+    status: document.getElementById('f-status-entry').value || 'open',
+    agenda: document.getElementById('f-agenda').value.trim(),
+    improvement, comment: document.getElementById('f-comment').value.trim(),
+    loggedBy: document.getElementById('f-logged-by').value
+  };
+  try {
+    const saved = await pushEntry('create', payload);
+    // Auto-feed backlog if improvement field is filled
+    if (improvement && saved) {
+      await pushBacklog('create', { title: improvement, module: curMod, owner: curOwner, priority: 'med', status: 'not_started', entry_id: saved.spId });
+    }
+    await refreshData();
+    ['f-issue','f-agenda','f-impr','f-comment'].forEach(id => { document.getElementById(id).value=''; });
+    document.getElementById('f-prio-entry').selectedIndex=0; document.getElementById('f-prio-entry').className='';
+    document.getElementById('f-logged-by').selectedIndex=0;
+    renderHist(curOwner, curMod);
+    toast(improvement ? 'Entry saved ✓ + added to backlog ⚙️' : 'Entry saved ✓');
+  } catch(err) { toast('Save failed: ' + err.message, true); }
+  finally { btn.textContent='✓ Save Entry'; btn.disabled=false; setLoading('mod-loading', false); }
+}
+
+// ══════════════════════════════════════════════════════════════
+// UPDATE STATUS
 // ══════════════════════════════════════════════════════════════
 async function updateStatus(spId, status) {
-  const entry = store.find(e => e.spId == spId);
-  if (!entry) return;
-  const prev = entry.status;
-  entry.status = status; // optimistic update
+  const entry = store.find(e=>e.spId==spId); if(!entry) return;
+  const prev = entry.status; entry.status = status;
   renderHist(curOwner, curMod);
-  try {
-    await pushEntry('update', { spId, status });
-    await refreshData();
-    renderHist(curOwner, curMod);
-  } catch (err) {
-    entry.status = prev; // rollback
-    renderHist(curOwner, curMod);
-    toast('Update failed', true);
-  }
+  try { await pushEntry('update', {spId, status}); await refreshData(); renderHist(curOwner,curMod); toast(`Status → ${status}`); }
+  catch(err) { entry.status=prev; renderHist(curOwner,curMod); toast('Update failed', true); }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -816,296 +969,268 @@ async function updateStatus(spId, status) {
 async function delEntry(spId) {
   if (!confirm('Delete this entry?')) return;
   const prev = [...store];
-  try {
-    await pushEntry('delete', { spId });
-    await refreshData();
-    renderHist(curOwner, curMod);
-  } catch (err) {
-    store = prev; // rollback
-    renderHist(curOwner, curMod);
-    toast('Delete failed', true);
-  }
+  try { await pushEntry('delete', {spId}); await refreshData(); renderHist(curOwner,curMod); toast('Entry deleted'); }
+  catch(err) { store=prev; renderHist(curOwner,curMod); toast('Delete failed', true); }
 }
 
 // ══════════════════════════════════════════════════════════════
 // EDIT ENTRY
 // ══════════════════════════════════════════════════════════════
 function editEntry(spId) {
-  document.querySelectorAll('.edit-form').forEach(f => f.remove());
-  document.querySelectorAll('.h-entry.editing').forEach(d => d.classList.remove('editing'));
-  const e = store.find(x => x.spId == spId);
-  if (!e) return;
-  const entryDiv = document.querySelector(`.h-entry[data-id="${spId}"]`);
-  if (!entryDiv) return;
+  document.querySelectorAll('.edit-form').forEach(f=>f.remove());
+  document.querySelectorAll('.h-entry.editing').forEach(d=>d.classList.remove('editing'));
+  const e = store.find(x=>x.spId==spId); if(!e) return;
+  const entryDiv = document.querySelector(`.h-entry[data-id="${spId}"]`); if(!entryDiv) return;
   entryDiv.classList.add('editing');
-  const body = entryDiv.querySelector('.h-body');
-  const tog  = entryDiv.querySelector('.h-tog');
-  body.classList.remove('closed'); tog.textContent = '▼';
-  const form = document.createElement('div');
-  form.className = 'edit-form';
+  const body=entryDiv.querySelector('.h-body'); const tog=entryDiv.querySelector('.h-tog');
+  body.classList.remove('closed'); tog.textContent='▼';
+  const form = document.createElement('div'); form.className='edit-form';
   form.innerHTML = `
     <div class="edit-row1">
-      <input type="text" id="edit-issue-${spId}" value="${e.issue || ''}" placeholder="Issue / topic title…">
+      <input type="text" id="edit-issue-${spId}" value="${e.issue||''}" placeholder="Issue / topic title…">
       <select id="edit-prio-${spId}" onchange="this.className=this.value">
         <option value="">Priority</option>
-        <option value="high" ${e.priority === 'high' ? 'selected' : ''}>🔴 High</option>
-        <option value="med"  ${e.priority === 'med'  ? 'selected' : ''}>🟡 Med</option>
-        <option value="low"  ${e.priority === 'low'  ? 'selected' : ''}>🟢 Low</option>
+        <option value="high" ${e.priority==='high'?'selected':''}>🔴 High</option>
+        <option value="med"  ${e.priority==='med'?'selected':''}>🟡 Med</option>
+        <option value="low"  ${e.priority==='low'?'selected':''}>🟢 Low</option>
       </select>
       <select id="edit-status-${spId}" onchange="this.className=this.value">
-        <option value="open"       ${(e.status || 'open') === 'open'       ? 'selected' : ''}>🔵 Open</option>
-        <option value="inprogress" ${e.status === 'inprogress'             ? 'selected' : ''}>🟡 In Progress</option>
-        <option value="resolved"   ${e.status === 'resolved'               ? 'selected' : ''}>🟢 Resolved</option>
+        <option value="open"       ${(e.status||'open')==='open'?'selected':''}>🔵 Open</option>
+        <option value="inprogress" ${e.status==='inprogress'?'selected':''}>🟡 In Progress</option>
+        <option value="resolved"   ${e.status==='resolved'?'selected':''}>🟢 Resolved</option>
       </select>
     </div>
     <div class="edit-row2">
-      <div class="edit-ta-wrap"><div class="edit-ta-lbl">📌 Agenda / Decision</div><textarea id="edit-agenda-${spId}"   placeholder="Agenda or decision needed…">${e.agenda      || ''}</textarea></div>
-      <div class="edit-ta-wrap"><div class="edit-ta-lbl">⚙️ System Improvement</div><textarea id="edit-impr-${spId}"    placeholder="System improvement idea…">${e.improvement  || ''}</textarea></div>
-      <div class="edit-ta-wrap"><div class="edit-ta-lbl">💬 Comments</div><textarea id="edit-comment-${spId}" placeholder="Context, root cause…">${e.comment      || ''}</textarea></div>
+      <div class="edit-ta-wrap"><div class="edit-ta-lbl">📌 Agenda</div><textarea id="edit-agenda-${spId}">${e.agenda||''}</textarea></div>
+      <div class="edit-ta-wrap"><div class="edit-ta-lbl">⚙️ Improvement</div><textarea id="edit-impr-${spId}">${e.improvement||''}</textarea></div>
+      <div class="edit-ta-wrap"><div class="edit-ta-lbl">💬 Comments</div><textarea id="edit-comment-${spId}">${e.comment||''}</textarea></div>
     </div>
     <div class="edit-actions">
-      <span class="edit-modified">Editing entry from ${e.date || '—'}</span>
+      <span class="edit-modified">Editing entry from ${e.date||'—'}</span>
       <div style="display:flex;gap:8px">
         <button class="btn-cancel-edit" onclick="cancelEdit(${spId})">Cancel</button>
         <button class="btn-save-edit" id="edit-btn-${spId}" onclick="saveEdit(${spId})">✓ Save Changes</button>
       </div>
     </div>`;
   entryDiv.appendChild(form);
-  const ps = document.getElementById(`edit-prio-${spId}`);   if (ps && e.priority) ps.className = e.priority;
-  const ss = document.getElementById(`edit-status-${spId}`); if (ss && e.status)   ss.className = e.status;
-  form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  const ps=document.getElementById(`edit-prio-${spId}`); if(ps&&e.priority) ps.className=e.priority;
+  const ss=document.getElementById(`edit-status-${spId}`); if(ss&&e.status) ss.className=e.status;
+  form.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-
 function cancelEdit(spId) {
-  const entryDiv = document.querySelector(`.h-entry[data-id="${spId}"]`);
-  if (entryDiv) { entryDiv.classList.remove('editing'); const f = entryDiv.querySelector('.edit-form'); if (f) f.remove(); }
+  const d=document.querySelector(`.h-entry[data-id="${spId}"]`);
+  if(d){d.classList.remove('editing');const f=d.querySelector('.edit-form');if(f)f.remove();}
 }
-
 async function saveEdit(spId) {
-  const e = store.find(x => x.spId == spId);
-  if (!e) return;
-  const btn = document.getElementById(`edit-btn-${spId}`);
-  if (btn) { btn.textContent = 'Saving…'; btn.disabled = true; }
-  const updated = {
-    spId,
-    issue:       document.getElementById(`edit-issue-${spId}`).value.trim()   || e.issue,
-    priority:    document.getElementById(`edit-prio-${spId}`).value,
-    status:      document.getElementById(`edit-status-${spId}`).value,
-    agenda:      document.getElementById(`edit-agenda-${spId}`).value.trim(),
-    improvement: document.getElementById(`edit-impr-${spId}`).value.trim(),
-    comment:     document.getElementById(`edit-comment-${spId}`).value.trim(),
-  };
-  try {
-    await pushEntry('update', updated);
-    await refreshData();
-    renderHist(curOwner, curMod);
-    toast('Entry updated ✓');
-  } catch (err) {
-    toast('Update failed', true);
-    if (btn) { btn.textContent = '✓ Save Changes'; btn.disabled = false; }
-  }
+  const e=store.find(x=>x.spId==spId); if(!e) return;
+  const btn=document.getElementById(`edit-btn-${spId}`); if(btn){btn.textContent='Saving…';btn.disabled=true;}
+  const updated={spId,issue:document.getElementById(`edit-issue-${spId}`).value.trim()||e.issue,
+    priority:document.getElementById(`edit-prio-${spId}`).value,status:document.getElementById(`edit-status-${spId}`).value,
+    agenda:document.getElementById(`edit-agenda-${spId}`).value.trim(),
+    improvement:document.getElementById(`edit-impr-${spId}`).value.trim(),
+    comment:document.getElementById(`edit-comment-${spId}`).value.trim()};
+  try { await pushEntry('update',updated); await refreshData(); renderHist(curOwner,curMod); toast('Entry updated ✓'); }
+  catch(err) { toast('Update failed',true); if(btn){btn.textContent='✓ Save Changes';btn.disabled=false;} }
 }
-
-function toggleH(hd) { const b = hd.nextElementSibling, t = hd.querySelector('.h-tog'); b.classList.toggle('closed'); t.textContent = b.classList.contains('closed') ? '▶' : '▼'; }
+function toggleH(hd){const b=hd.nextElementSibling,t2=hd.querySelector('.h-tog');b.classList.toggle('closed');t2.textContent=b.classList.contains('closed')?'▶':'▼';}
 
 // ══════════════════════════════════════════════════════════════
 // DASHBOARD
 // ══════════════════════════════════════════════════════════════
 function renderDash() {
-  const all  = allEntries();
-  const open = all.filter(e => (e.status || 'open') === 'open').length;
-  const inp  = all.filter(e => e.status === 'inprogress').length;
-  const res  = all.filter(e => e.status === 'resolved').length;
-  const high = all.filter(e => e.priority === 'high').length;
-  document.getElementById('dash-kpis').innerHTML = `
-    <div class="kpi-card"><div class="kpi-num">${all.length}</div><div class="kpi-label">Total Entries</div></div>
-    <div class="kpi-card"><div class="kpi-num" style="color:var(--high)">${high}</div><div class="kpi-label">High Priority</div></div>
-    <div class="kpi-card"><div class="kpi-num" style="color:var(--open)">${open}</div><div class="kpi-label">Open</div><div class="kpi-sub">${inp} In Progress</div></div>
-    <div class="kpi-card"><div class="kpi-num" style="color:var(--resolved)">${res}</div><div class="kpi-label">Resolved</div><div class="kpi-sub">${all.length ? Math.round(res / all.length * 100) : 0}% resolution rate</div></div>`;
-  const modCount = {};
-  all.forEach(e => { modCount[e.module] = (modCount[e.module] || 0) + 1; });
-  renderBarChart('chart-module', modCount, MOD_LABELS);
-  renderBarChart('chart-prio',   { 'High': all.filter(e => e.priority === 'high').length, 'Med': all.filter(e => e.priority === 'med').length, 'Low': all.filter(e => e.priority === 'low').length, '—': all.filter(e => !e.priority).length });
-  renderBarChart('chart-status', { 'Open': open, 'In Progress': inp, 'Resolved': res });
-  const ownerCount = {};
-  OWNERS.forEach(o => { const cnt = store.filter(e => e.owner === o.id).length; if (cnt) ownerCount[o.name.split(' ')[0]] = cnt; });
-  renderBarChart('chart-owner', ownerCount);
-  const tbody = document.getElementById('dash-high'); tbody.innerHTML = '';
-  const highOpen = allEntriesWithMeta().filter(({ e }) => e.priority === 'high' && (e.status || 'open') !== 'resolved').sort((a, b) => (b.e.date || '').localeCompare(a.e.date || ''));
-  if (!highOpen.length) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);font-style:italic;padding:20px">No high priority open items 🎉</td></tr>`; return; }
-  highOpen.forEach(({ o, m, e }) => {
-    const st = e.status || 'open';
-    tbody.innerHTML += `<tr><td>${e.date || '—'}</td><td>${o.name.split(' ')[0]}</td>
+  const all=allEntries();
+  const open=all.filter(e=>(e.status||'open')==='open').length;
+  const inp=all.filter(e=>e.status==='inprogress').length;
+  const res=all.filter(e=>e.status==='resolved').length;
+  const high=all.filter(e=>e.priority==='high').length;
+  document.getElementById('dash-kpis').innerHTML=`
+    <div class="kpi-card"><div class="kpi-num">${all.length}</div><div class="kpi-label">${t('total_entries')}</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--high)">${high}</div><div class="kpi-label">${t('high_prio')}</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--open)">${open}</div><div class="kpi-label">${t('open_lbl')}</div><div class="kpi-sub">${inp} In Progress</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--resolved)">${res}</div><div class="kpi-label">${t('resolved_lbl')}</div><div class="kpi-sub">${all.length?Math.round(res/all.length*100):0}% ${t('resolution_rate')}</div></div>`;
+  const modCount={};all.forEach(e=>{modCount[e.module]=(modCount[e.module]||0)+1;});
+  renderBarChart('chart-module',modCount,MOD_LABELS);
+  renderBarChart('chart-prio',{'High':all.filter(e=>e.priority==='high').length,'Med':all.filter(e=>e.priority==='med').length,'Low':all.filter(e=>e.priority==='low').length});
+  renderBarChart('chart-status',{'Open':open,'In Progress':inp,'Resolved':res});
+  const ownerCount={};OWNERS.forEach(o=>{const cnt=store.filter(e=>e.owner===o.id).length;if(cnt)ownerCount[o.name.split(' ')[0]]=cnt;});
+  renderBarChart('chart-owner',ownerCount);
+  // Backlog analytics
+  const blStatusCount={};backlogStore.forEach(b=>{blStatusCount[blStatusLabel(b.status||'not_started')]=(blStatusCount[blStatusLabel(b.status||'not_started')]||0)+1;});
+  renderBarChart('chart-backlog-status',blStatusCount);
+  const blModCount={};backlogStore.forEach(b=>{if(b.module){blModCount[MOD_LABELS[b.module]||b.module]=(blModCount[MOD_LABELS[b.module]||b.module]||0)+1;}});
+  renderBarChart('chart-backlog-module',blModCount);
+  const tbody=document.getElementById('dash-high');tbody.innerHTML='';
+  const highOpen=allEntriesWithMeta().filter(({e})=>e.priority==='high'&&(e.status||'open')!=='resolved').sort((a,b)=>(b.e.date||'').localeCompare(a.e.date||''));
+  if(!highOpen.length){tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--muted);font-style:italic;padding:20px">No high priority open items 🎉</td></tr>`;return;}
+  highOpen.forEach(({o,m,e})=>{
+    const st=e.status||'open';
+    tbody.innerHTML+=`<tr><td>${e.date||'—'}</td><td>${o.name.split(' ')[0]}</td>
     <td class="lnk" onclick="openMod('${o.id}','${m}')">${m}</td>
     <td>${e.issue}</td><td><span class="prio-badge pb-high">HIGH</span></td>
-    <td><span class="sbadge sb-${st}">${st === 'inprogress' ? 'In Progress' : st.charAt(0).toUpperCase() + st.slice(1)}</span></td></tr>`;
+    <td><span class="sbadge sb-${st}">${st==='inprogress'?'In Progress':st.charAt(0).toUpperCase()+st.slice(1)}</span></td></tr>`;
   });
 }
-
-function allEntriesWithMeta() {
-  return store.map(e => {
-    const o = OWNERS.find(x => x.id === e.owner);
-    return o ? { o, m: e.module, e } : null;
-  }).filter(Boolean);
-}
-
-function renderBarChart(containerId, data, labels = {}) {
-  const el = document.getElementById(containerId); el.innerHTML = '';
-  const max = Math.max(...Object.values(data), 1);
-  Object.entries(data).sort((a, b) => b[1] - a[1]).forEach(([k, v]) => {
-    if (!v) return;
-    const lbl = labels[k] || k;
-    el.innerHTML += `<div class="bar-row">
-      <div class="bar-lbl" title="${lbl}">${lbl}</div>
-      <div class="bar-wrap"><div class="bar-fill" style="width:${Math.round(v / max * 100)}%;background:var(--accent)"></div></div>
-      <div class="bar-val">${v}</div>
-    </div>`;
+function renderBarChart(containerId,data,labels={}) {
+  const el=document.getElementById(containerId);if(!el)return;el.innerHTML='';
+  const max=Math.max(...Object.values(data),1);
+  Object.entries(data).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{
+    if(!v)return;const lbl=labels[k]||k;
+    el.innerHTML+=`<div class="bar-row"><div class="bar-lbl" title="${lbl}">${lbl}</div><div class="bar-wrap"><div class="bar-fill" style="width:${Math.round(v/max*100)}%;background:var(--accent)"></div></div><div class="bar-val">${v}</div></div>`;
   });
-  if (!el.innerHTML) el.innerHTML = '<p style="font-size:12px;color:var(--muted);font-style:italic">No data yet</p>';
+  if(!el.innerHTML)el.innerHTML='<p style="font-size:12px;color:var(--muted);font-style:italic">No data yet</p>';
 }
 
 // ══════════════════════════════════════════════════════════════
 // SESSION VIEW
 // ══════════════════════════════════════════════════════════════
 function renderSession() {
-  document.getElementById('session-date').textContent = `Generated: ${new Date().toLocaleDateString()}`;
-  const allMeta  = allEntriesWithMeta();
-  const highOpen = allMeta.filter(({ e }) => e.priority === 'high' && (e.status || 'open') !== 'resolved').sort((a, b) => (b.e.date || '').localeCompare(a.e.date || ''));
-  const medOpen  = allMeta.filter(({ e }) => e.priority === 'med'  && (e.status || 'open') !== 'resolved').sort((a, b) => (b.e.date || '').localeCompare(a.e.date || ''));
-  const blInFlight = backlogItems.filter(b => b.status !== 'done');
-  renderAgendaItems('session-high', highOpen, 'high');
-  renderAgendaItems('session-med',  medOpen,  'med');
-  renderBacklogSession('session-backlog', blInFlight);
+  document.getElementById('session-date').textContent=`Generated: ${new Date().toLocaleDateString()}`;
+  const allMeta=allEntriesWithMeta();
+  const highOpen=allMeta.filter(({e})=>e.priority==='high'&&(e.status||'open')!=='resolved'&&!e.sessionDate).sort((a,b)=>(b.e.date||'').localeCompare(a.e.date||''));
+  const medOpen=allMeta.filter(({e})=>e.priority==='med'&&(e.status||'open')!=='resolved'&&!e.sessionDate).sort((a,b)=>(b.e.date||'').localeCompare(a.e.date||''));
+  const blInFlight=backlogStore.filter(b=>b.status!=='finalised'&&b.status!=='cancelled'&&b.status!=='dropped');
+  const discussed=allMeta.filter(({e})=>e.sessionDate).sort((a,b)=>(b.e.sessionDate||'').localeCompare(a.e.sessionDate||'')).slice(0,10);
+  renderAgendaItems('session-high',highOpen,'high');
+  renderAgendaItems('session-med',medOpen,'med');
+  renderBacklogSession('session-backlog',blInFlight);
+  renderDiscussed('session-discussed',discussed);
 }
-
-function renderAgendaItems(containerId, items, prio) {
-  const el = document.getElementById(containerId); el.innerHTML = '';
-  if (!items.length) { el.innerHTML = `<div class="hist-empty">No ${prio} priority open items.</div>`; return; }
-  items.forEach(({ o, m, e }, i) => {
-    const st = e.status || 'open';
-    el.innerHTML += `<div class="agenda-item">
-      <div class="agenda-num">${String(i + 1).padStart(2, '0')}</div>
-      <div class="agenda-content"><h4>${e.issue}</h4><p>${o.name.split(' ')[0]} · ${MOD_LABELS[m] || m}${e.agenda ? ' · ' + e.agenda : ''}</p></div>
-      <div class="agenda-meta">
-        <span class="prio-badge pb-${prio}" style="display:block;margin-bottom:4px">${prio.toUpperCase()}</span>
-        <span class="sbadge sb-${st}" style="font-size:10px">${st === 'inprogress' ? 'In Progress' : st.charAt(0).toUpperCase() + st.slice(1)}</span>
-      </div>
-    </div>`;
+function renderAgendaItems(containerId,items,prio) {
+  const el=document.getElementById(containerId);el.innerHTML='';
+  if(!items.length){el.innerHTML=`<div class="hist-empty">No ${prio} priority open items.</div>`;return;}
+  items.forEach(({o,m,e},i)=>{
+    const st=e.status||'open';
+    el.innerHTML+=`<div class="agenda-item"><div class="agenda-num">${String(i+1).padStart(2,'0')}</div>
+    <div class="agenda-content"><h4>${e.issue}</h4><p>${o.name.split(' ')[0]} · ${MOD_LABELS[m]||m}${e.agenda?' · '+e.agenda:''}</p></div>
+    <div class="agenda-meta"><span class="prio-badge pb-${prio}" style="display:block;margin-bottom:4px">${prio.toUpperCase()}</span>
+    <span class="sbadge sb-${st}" style="font-size:10px">${st==='inprogress'?'In Progress':st.charAt(0).toUpperCase()+st.slice(1)}</span></div></div>`;
   });
 }
-
-function renderBacklogSession(containerId, items) {
-  const el = document.getElementById(containerId); el.innerHTML = '';
-  if (!items.length) { el.innerHTML = `<div class="hist-empty">No backlog items in flight. Add items in the Backlog tab.</div>`; return; }
-  items.forEach((b, i) => {
-    el.innerHTML += `<div class="agenda-item">
-      <div class="agenda-num">${String(i + 1).padStart(2, '0')}</div>
-      <div class="agenda-content"><h4>${b.title}</h4><p>${MOD_LABELS[b.mod] || b.mod || '—'} · Owner: ${b.owner || 'TBD'}</p></div>
-      <div class="agenda-meta"><span class="prio-badge pb-${b.prio || 'med'}">${(b.prio || 'med').toUpperCase()}</span></div>
-    </div>`;
+function renderBacklogSession(containerId,items) {
+  const el=document.getElementById(containerId);el.innerHTML='';
+  if(!items.length){el.innerHTML=`<div class="hist-empty">No backlog items in flight.</div>`;return;}
+  items.forEach((b,i)=>{
+    el.innerHTML+=`<div class="agenda-item"><div class="agenda-num">${String(i+1).padStart(2,'0')}</div>
+    <div class="agenda-content"><h4>${b.title}</h4><p>${MOD_LABELS[b.module]||b.module||'—'} · ${blStatusLabel(b.status||'not_started')}</p></div>
+    <div class="agenda-meta"><span class="prio-badge pb-${b.priority||'med'}">${(b.priority||'med').toUpperCase()}</span></div></div>`;
+  });
+}
+function renderDiscussed(containerId,items) {
+  const el=document.getElementById(containerId);el.innerHTML='';
+  if(!items.length){el.innerHTML=`<div class="hist-empty">No entries marked as discussed yet.</div>`;return;}
+  items.forEach(({o,m,e},i)=>{
+    el.innerHTML+=`<div class="agenda-item" style="border-left-color:var(--resolved)">
+    <div class="agenda-num">${String(i+1).padStart(2,'0')}</div>
+    <div class="agenda-content"><h4>${e.issue}</h4>
+    <p>${o.name.split(' ')[0]} · ${MOD_LABELS[m]||m} · Session: ${e.sessionDate}</p>
+    ${e.sessionNotes?`<p style="margin-top:4px;font-style:italic">"${e.sessionNotes}"</p>`:''}
+    </div><div class="agenda-meta"><span class="sbadge sb-resolved" style="font-size:10px">Discussed</span></div></div>`;
   });
 }
 
 // ══════════════════════════════════════════════════════════════
-// BACKLOG (in-memory only — low stakes, no SharePoint needed)
+// BACKLOG
 // ══════════════════════════════════════════════════════════════
-function addBacklog() {
-  const title = document.getElementById('bl-title').value.trim();
-  if (!title) { alert('Please enter an improvement title.'); return; }
-  backlogItems.push({ id: Date.now(), title, mod: document.getElementById('bl-mod').value, owner: document.getElementById('bl-owner').value.trim(), prio: document.getElementById('bl-prio').value, status: 'open', createdAt: Date.now() });
-  document.getElementById('bl-title').value = ''; document.getElementById('bl-owner').value = '';
-  document.getElementById('bl-mod').selectedIndex = 0; document.getElementById('bl-prio').selectedIndex = 0;
-  renderBacklog(); toast('Backlog item added ✓');
+async function addBacklog() {
+  const title=document.getElementById('bl-title').value.trim();
+  if(!title){alert('Please enter an improvement title.');return;}
+  try {
+    await pushBacklog('create',{title,module:document.getElementById('bl-mod').value,owner:document.getElementById('bl-owner').value.trim(),priority:document.getElementById('bl-prio').value,status:'not_started'});
+    await refreshData(); renderBacklog();
+    document.getElementById('bl-title').value='';document.getElementById('bl-owner').value='';
+    document.getElementById('bl-mod').selectedIndex=0;document.getElementById('bl-prio').selectedIndex=0;
+    toast('Backlog item added ✓');
+  } catch(err){toast('Failed to add backlog item',true);}
 }
-
 function renderBacklog() {
-  const el = document.getElementById('bl-list'); el.innerHTML = '';
-  if (!backlogItems.length) { el.innerHTML = `<div class="hist-empty">No backlog items yet. Add system improvements above.</div>`; return; }
-  backlogItems.forEach((b, i) => {
-    const st = b.status || 'open';
-    el.innerHTML += `<div class="bl-item">
-      <div><div class="bl-title">${b.title}</div><div class="bl-sub">${MOD_LABELS[b.mod] || b.mod || '—'} · Strada owner: ${b.owner || 'TBD'}</div></div>
-      <span class="prio-badge pb-${b.prio || 'med'}">${(b.prio || 'med').toUpperCase()}</span>
-      <select class="status-select" onchange="updateBacklogStatus(${i},this.value)">
-        <option value="open"       ${st === 'open'       ? 'selected' : ''}>🔵 Open</option>
-        <option value="inprogress" ${st === 'inprogress' ? 'selected' : ''}>🟡 In Progress</option>
-        <option value="done"       ${st === 'done'       ? 'selected' : ''}>🟢 Done</option>
+  const el=document.getElementById('bl-list');el.innerHTML='';
+  const search=(document.getElementById('bl-search')?.value||'').toLowerCase();
+  const filterStatus=document.getElementById('bl-filter-status')?.value||'';
+  const filterMod=document.getElementById('bl-filter-mod')?.value||'';
+  let items=[...backlogStore];
+  if(search)items=items.filter(b=>(b.title||'').toLowerCase().includes(search));
+  if(filterStatus)items=items.filter(b=>(b.status||'not_started')===filterStatus);
+  if(filterMod)items=items.filter(b=>b.module===filterMod);
+  if(!items.length){el.innerHTML=`<div class="hist-empty">No backlog items${search||filterStatus||filterMod?' matching filters':' yet'}.</div>`;return;}
+  items.forEach(b=>{
+    const fromEntry=!!b.entry_id;
+    const cls=fromEntry?' from-entry':'';
+    el.innerHTML+=`<div class="bl-item${cls}">
+      <div>
+        <div class="bl-title-text">${b.title}</div>
+        <div class="bl-sub">${MOD_LABELS[b.module]||b.module||'—'} · Strada: ${b.owner||'TBD'}</div>
+        ${fromEntry?`<div class="bl-link">⚙️ Auto-generated from entry</div>`:''}
+      </div>
+      <span class="prio-badge pb-${b.priority||'med'}">${(b.priority||'med').toUpperCase()}</span>
+      <select class="status-select" style="font-size:11px;padding:4px 8px" onchange="updateBacklogStatus(${b.id},this.value)">
+        ${Object.entries(BL_STATUSES).map(([k,v])=>`<option value="${k}" ${(b.status||'not_started')===k?'selected':''}>${v}</option>`).join('')}
       </select>
-      <button class="btn-del" onclick="deleteBacklog(${i})">✕</button>
+      <button class="btn-del" onclick="deleteBacklog(${b.id})">✕</button>
     </div>`;
   });
 }
-
-function updateBacklogStatus(i, status) { backlogItems[i].status = status; renderBacklog(); }
-function deleteBacklog(i) { if (!confirm('Delete this item?')) return; backlogItems.splice(i, 1); renderBacklog(); }
+async function updateBacklogStatus(id,status) {
+  try { await pushBacklog('update',{id,status}); await refreshData(); renderBacklog(); toast(`Backlog → ${blStatusLabel(status)}`); }
+  catch(err){toast('Update failed',true);}
+}
+async function deleteBacklog(id) {
+  if(!confirm('Delete this backlog item?'))return;
+  try { await pushBacklog('delete',{id}); await refreshData(); renderBacklog(); toast('Deleted'); }
+  catch(err){toast('Delete failed',true);}
+}
 
 // ══════════════════════════════════════════════════════════════
 // EXPORT
 // ══════════════════════════════════════════════════════════════
-function toXLSX(rows, sheetName, filename) {
-  const ws = XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols'] = [{ wch: 12 }, { wch: 20 }, { wch: 12 }, { wch: 40 }, { wch: 10 }, { wch: 10 }, { wch: 40 }, { wch: 40 }, { wch: 40 }, { wch: 22 }];
-  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, sheetName); XLSX.writeFile(wb, filename);
+function toXLSX(rows,sheetName,filename){
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:12},{wch:20},{wch:12},{wch:40},{wch:14},{wch:10},{wch:10},{wch:40},{wch:40},{wch:40},{wch:22}];
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,sheetName);XLSX.writeFile(wb,filename);
 }
-
-function exportModule() {
-  const o = OWNERS.find(x => x.id === curOwner), label = MOD_LABELS[curMod] || curMod;
-  const entries = getCached(curOwner, curMod);
-  const rows = [
-    ['Nexans HR Digital — Ticket Review'],
-    [`Module: ${curMod} — ${label}`, `Owner: ${o.name}`, `Exported: ${new Date().toLocaleString()}`],
-    [],
-    ['Date','Owner','Module','Issue / Topic','Priority','Status','Agenda / Decision','System Improvement','Comments','Logged At']
-  ];
-  entries.forEach(e => rows.push([e.date || '', o.name, label, e.issue || '', e.priority?.toUpperCase() || '', (e.status || 'open'), e.agenda || '', e.improvement || '', e.comment || '', new Date(e.savedAt).toLocaleString()]));
-  toXLSX(rows, curMod, `Nexans_${curMod}_${curOwner}.xlsx`);
+function exportModule(){
+  const o=OWNERS.find(x=>x.id===curOwner),label=MOD_LABELS[curMod]||curMod;
+  const entries=getCached(curOwner,curMod);
+  const rows=[['Nexans HR Digital — Ticket Review'],[`Module: ${curMod} — ${label}`,`Owner: ${o.name}`,`Exported: ${new Date().toLocaleString()}`],[],
+    ['Date','Owner','Module','Issue','Logged By','Priority','Status','Agenda','Improvement','Comments','Logged At']];
+  entries.forEach(e=>rows.push([e.date||'',o.name,label,e.issue||'',e.loggedBy||'',e.priority?.toUpperCase()||'',(e.status||'open'),e.agenda||'',e.improvement||'',e.comment||'',new Date(e.savedAt).toLocaleString()]));
+  toXLSX(rows,curMod,`Nexans_${curMod}_${curOwner}.xlsx`);
 }
-
-function exportAll() {
-  const rows = [
-    ['Nexans HR Digital — Ticket Review Consolidated Inputs'],
-    [`Exported: ${new Date().toLocaleString()}`],
-    [],
-    ['Date','Owner','Role','Module','Issue / Topic','Priority','Status','Agenda / Decision','System Improvement','Comments','Logged At']
-  ];
-  store.forEach(e => {
-    const o = OWNERS.find(x => x.id === e.owner);
-    if (!o) return;
-    rows.push([e.date || '', o.name, o.role, MOD_LABELS[e.module] || e.module, e.issue || '', e.priority?.toUpperCase() || '', (e.status || 'open'), e.agenda || '', e.improvement || '', e.comment || '', new Date(e.savedAt).toLocaleString()]);
+function exportAll(){
+  const rows=[['Nexans HR Digital — Ticket Review Consolidated'],[`Exported: ${new Date().toLocaleString()}`],[],
+    ['Date','Owner','Role','Module','Issue','Logged By','Priority','Status','Agenda','Improvement','Comments','Session Date','Session Notes','Logged At']];
+  store.forEach(e=>{
+    const o=OWNERS.find(x=>x.id===e.owner);if(!o)return;
+    rows.push([e.date||'',o.name,o.role,MOD_LABELS[e.module]||e.module,e.issue||'',e.loggedBy||'',e.priority?.toUpperCase()||'',(e.status||'open'),e.agenda||'',e.improvement||'',e.comment||'',e.sessionDate||'',e.sessionNotes||'',new Date(e.savedAt).toLocaleString()]);
   });
-  toXLSX(rows, 'All Inputs', 'Nexans_TicketReview_AllInputs.xlsx');
+  toXLSX(rows,'All Inputs','Nexans_TicketReview_AllInputs.xlsx');
 }
-
-function exportSessionPDF() {
-  const allMeta  = allEntriesWithMeta();
-  const highOpen = allMeta.filter(({ e }) => e.priority === 'high' && (e.status || 'open') !== 'resolved');
-  const medOpen  = allMeta.filter(({ e }) => e.priority === 'med'  && (e.status || 'open') !== 'resolved');
-  const blInFlight = backlogItems.filter(b => b.status !== 'done');
-  const w = window.open('', '_blank');
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
-  <style>
+function exportSessionPDF(){
+  const allMeta=allEntriesWithMeta();
+  const highOpen=allMeta.filter(({e})=>e.priority==='high'&&(e.status||'open')!=='resolved'&&!e.sessionDate);
+  const medOpen=allMeta.filter(({e})=>e.priority==='med'&&(e.status||'open')!=='resolved'&&!e.sessionDate);
+  const blInFlight=backlogStore.filter(b=>b.status!=='finalised'&&b.status!=='cancelled'&&b.status!=='dropped');
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
     body{font-family:'Segoe UI',sans-serif;max-width:800px;margin:40px auto;color:#1A1A1A;font-size:13px;}
-    h1{font-size:22px;color:#0D1B2A;margin-bottom:4px;}
-    .sub{color:#8A8680;font-size:12px;margin-bottom:28px;}
+    h1{font-size:22px;color:#0D1B2A;margin-bottom:4px;}.sub{color:#8A8680;font-size:12px;margin-bottom:28px;}
     h2{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8A8680;margin:24px 0 12px;border-bottom:1px solid #D6D0C6;padding-bottom:6px;}
     .item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid #F0EDE8;}
     .num{font-size:20px;font-weight:700;color:#D6D0C6;min-width:28px;}
-    .item-title{font-weight:600;color:#0D1B2A;margin-bottom:3px;}
-    .item-sub{font-size:11px;color:#8A8680;}
+    .item-title{font-weight:600;color:#0D1B2A;margin-bottom:3px;}.item-sub{font-size:11px;color:#8A8680;}
     .badge{display:inline-block;padding:2px 8px;font-size:10px;font-weight:700;margin-left:8px;}
-    .high{background:#fdecea;color:#C02A2A;} .med{background:#fef3e2;color:#B07010;}
+    .high{background:#fdecea;color:#C02A2A;}.med{background:#fef3e2;color:#B07010;}
     .footer{margin-top:40px;font-size:10px;color:#C0BAB0;text-align:center;}
     @media print{body{margin:20px;}}
   </style></head><body>
   <h1>Ticket Review — Session Agenda</h1>
   <div class="sub">Generated: ${new Date().toLocaleDateString()} · Nexans HR Digital</div>
   <h2>🔴 High Priority — Open Items (${highOpen.length})</h2>
-  ${highOpen.map(({ o, m, e }, i) => `<div class="item"><div class="num">${String(i + 1).padStart(2, '0')}</div><div><div class="item-title">${e.issue}<span class="badge high">HIGH</span></div><div class="item-sub">${o.name.split(' ')[0]} · ${MOD_LABELS[m] || m}${e.agenda ? ' · ' + e.agenda : ''}</div></div></div>`).join('') || '<p style="color:#C0BAB0;font-style:italic">No high priority open items.</p>'}
-  <h2>🟡 Medium Priority — For Discussion (${medOpen.length})</h2>
-  ${medOpen.map(({ o, m, e }, i) => `<div class="item"><div class="num">${String(i + 1).padStart(2, '0')}</div><div><div class="item-title">${e.issue}<span class="badge med">MED</span></div><div class="item-sub">${o.name.split(' ')[0]} · ${MOD_LABELS[m] || m}${e.agenda ? ' · ' + e.agenda : ''}</div></div></div>`).join('') || '<p style="color:#C0BAB0;font-style:italic">No medium priority open items.</p>'}
-  <h2>⚙️ Improvement Backlog — In Flight (${blInFlight.length})</h2>
-  ${blInFlight.map((b, i) => `<div class="item"><div class="num">${String(i + 1).padStart(2, '0')}</div><div><div class="item-title">${b.title}</div><div class="item-sub">${MOD_LABELS[b.mod] || b.mod || '—'} · Strada owner: ${b.owner || 'TBD'}</div></div></div>`).join('') || '<p style="color:#C0BAB0;font-style:italic">No backlog items in flight.</p>'}
-  <div class="footer">Nexans HR Digital · Ticket Review Sessions · Confidential Internal Document</div>
+  ${highOpen.map(({o,m,e},i)=>`<div class="item"><div class="num">${String(i+1).padStart(2,'0')}</div><div><div class="item-title">${e.issue}<span class="badge high">HIGH</span></div><div class="item-sub">${o.name.split(' ')[0]} · ${MOD_LABELS[m]||m}${e.agenda?' · '+e.agenda:''}</div></div></div>`).join('')||'<p style="color:#C0BAB0;font-style:italic">None.</p>'}
+  <h2>🟡 Medium Priority (${medOpen.length})</h2>
+  ${medOpen.map(({o,m,e},i)=>`<div class="item"><div class="num">${String(i+1).padStart(2,'0')}</div><div><div class="item-title">${e.issue}<span class="badge med">MED</span></div><div class="item-sub">${o.name.split(' ')[0]} · ${MOD_LABELS[m]||m}</div></div></div>`).join('')||'<p style="color:#C0BAB0;font-style:italic">None.</p>'}
+  <h2>⚙️ Backlog in Flight (${blInFlight.length})</h2>
+  ${blInFlight.map((b,i)=>`<div class="item"><div class="num">${String(i+1).padStart(2,'0')}</div><div><div class="item-title">${b.title}</div><div class="item-sub">${MOD_LABELS[b.module]||b.module||'—'} · ${blStatusLabel(b.status||'not_started')}</div></div></div>`).join('')||'<p style="color:#C0BAB0;font-style:italic">None.</p>'}
+  <div class="footer">Nexans HR Digital · Ticket Review Sessions · Confidential</div>
   <script>window.print();<\/script></body></html>`);
   w.document.close();
 }
@@ -1114,7 +1239,7 @@ function exportSessionPDF() {
 // BOOT
 // ══════════════════════════════════════════════════════════════
 initFilters();
-initData(); // loads everything from SharePoint via Power Automate on page open
+initData();
 </script>
 </body>
 </html>
