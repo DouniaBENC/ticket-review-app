@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexans — Ticket Review</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root {
+  --bg:#F4F2EE; --white:#fff; --navy:#0D1B2A; --accent:#C8922A; --accent2:#F0C97A;
+  --border:#D6D0C6; --muted:#8A8680; --text:#1A1A1A;
+  --paulina:#2D6A9F; --margot:#2D8A6A; --dounia:#7A3DAA; --marta:#B05A20; --jerome:#1A7A7A;
+  --high:#C02A2A; --med:#B07010; --low:#2D7A4A;
+  --open:#2D6A9F; --inprogress:#B07010; --resolved:#2D7A4A;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;}
+.view{display:none;} .view.active{display:block;}
+
+/* TOPBAR */
+.topbar{background:var(--navy);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+.tb-left{display:flex;flex-direction:column;}
+.tb-brand{font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);letter-spacing:2px;text-transform:uppercase;}
+.tb-title{font-size:14px;font-weight:600;color:#fff;}
+.tb-right{display:flex;gap:8px;align-items:center;}
+.btn-nav{padding:6px 14px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.65);font-family:'IBM Plex Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;}
+.btn-nav:hover,.btn-nav.active{border-color:var(--accent);color:var(--accent);}
+.btn-accent{padding:6px 16px;background:var(--accent);color:#fff;border:none;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:opacity .2s;}
+.btn-accent:hover{opacity:.85;}
+.btn-back{padding:6px 14px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.65);font-family:'IBM Plex Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;}
+.btn-back:hover{border-color:var(--accent);color:var(--accent);}
+
+/* BREADCRUMB */
+.bc{max-width:1100px;margin:0 auto;padding:10px 28px 0;font-size:11px;color:var(--muted);display:flex;gap:6px;align-items:center;}
+.bc-lnk{cursor:pointer;transition:color .15s;} .bc-lnk:hover{color:var(--accent);}
+.bc-sep{color:var(--border);} .bc-cur{color:var(--text);font-weight:500;}
+
+/* WRAP */
+.wrap{max-width:1100px;margin:0 auto;padding:24px 28px 80px;}
+
+/* SECTION LABEL */
+.slabel{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.slabel::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* INSTR */
+.instr{background:var(--navy);padding:13px 20px;font-size:13px;color:rgba(255,255,255,.65);line-height:1.6;margin-bottom:24px;border-left:3px solid var(--accent);}
+.instr strong{color:var(--accent2);font-weight:500;}
+
+/* LOADING BANNER */
+.loading-banner{background:var(--navy);border-left:3px solid var(--accent2);padding:10px 20px;font-size:12px;color:rgba(255,255,255,.65);margin-bottom:16px;display:none;align-items:center;gap:10px;}
+.loading-banner.visible{display:flex;}
+.loading-dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* ERROR BANNER */
+.error-banner{background:#fdecea;border-left:3px solid var(--high);padding:10px 20px;font-size:12px;color:var(--high);margin-bottom:16px;display:none;align-items:center;justify-content:space-between;gap:10px;}
+.error-banner.visible{display:flex;}
+.btn-retry{padding:4px 12px;background:var(--high);color:#fff;border:none;font-family:'IBM Plex Sans',sans-serif;font-size:11px;cursor:pointer;}
+
+/* FILTER BAR */
+.filter-bar{display:flex;gap:10px;align-items:center;margin-bottom:20px;flex-wrap:wrap;}
+.filter-bar input,.filter-bar select{padding:7px 12px;border:1px solid var(--border);background:var(--white);font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--text);outline:none;transition:border-color .15s;}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--accent);}
+.filter-bar input{flex:1;min-width:200px;}
+.filter-bar select{min-width:130px;}
+.filter-bar .btn-clear-filter{padding:7px 14px;border:1px solid var(--border);background:transparent;font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s;}
+.filter-bar .btn-clear-filter:hover{border-color:var(--accent);color:var(--accent);}
+
+/* OWNER CARDS */
+.owners-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:32px;}
+.owner-card{background:var(--white);border:1px solid var(--border);padding:18px;cursor:pointer;transition:border-color .2s,box-shadow .15s,transform .15s;animation:fadeUp .4s ease both;}
+.owner-card:hover{border-color:var(--accent);box-shadow:0 4px 18px rgba(200,146,42,.11);transform:translateY(-2px);}
+.oc-head{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.ava{width:36px;height:36px;min-width:36px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+.ava-name{font-size:13px;font-weight:600;color:var(--navy);}
+.ava-role{font-size:11px;color:var(--muted);margin-top:1px;line-height:1.3;}
+.chips{display:flex;flex-wrap:wrap;gap:5px;}
+.chip{padding:3px 9px;font-size:11px;font-weight:600;border:1px solid;cursor:pointer;transition:all .15s;letter-spacing:.3px;}
+.chip:hover{opacity:.75;transform:scale(1.04);}
+.chip.pa{border-style:dashed;opacity:.65;}
+.chip.free{border-style:dotted;font-style:italic;font-weight:500;letter-spacing:0;opacity:.75;}
+.oc-footer{margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.oc-count{font-size:11px;color:var(--muted);} .oc-count strong{color:var(--accent);font-weight:600;}
+.oc-last{font-size:10px;color:var(--border);font-family:'IBM Plex Mono',monospace;}
+
+/* GLOBAL TABLE */
+.gtable{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--border);}
+.gtable th{padding:10px 14px;text-align:left;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;background:var(--navy);color:rgba(255,255,255,.65);}
+.gtable td{padding:9px 14px;font-size:12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+.gtable tr:last-child td{border-bottom:none;}
+.gtable tr:hover td{background:#FAFAF8;}
+.gtable td:first-child{font-family:'IBM Plex Mono',monospace;font-size:11px;}
+.gtable .lnk{cursor:pointer;color:var(--accent);font-weight:600;}
+.gtable .lnk:hover{opacity:.75;}
+
+/* STATUS BADGE */
+.sbadge{padding:2px 9px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-radius:2px;}
+.sb-open{background:rgba(45,106,159,.1);color:var(--open);}
+.sb-inprogress{background:rgba(176,112,16,.1);color:var(--inprogress);}
+.sb-resolved{background:rgba(45,122,74,.1);color:var(--resolved);}
+.prio-badge{padding:2px 9px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.pb-high{background:rgba(192,42,42,.1);color:var(--high);}
+.pb-med{background:rgba(176,112,16,.1);color:var(--med);}
+.pb-low{background:rgba(45,122,74,.1);color:var(--low);}
+
+/* OWNER VIEW */
+.owner-hbar{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;padding-bottom:20px;border-top:1px solid var(--border);padding-top:16px;}
+.ohb-info h2{font-size:20px;font-weight:600;color:var(--navy);}
+.ohb-info p{font-size:12px;color:var(--muted);margin-top:3px;}
+.mod-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.mod-btn{padding:7px 16px;font-size:12px;font-weight:600;border:1px solid;cursor:pointer;background:transparent;font-family:'IBM Plex Sans',sans-serif;letter-spacing:.4px;transition:all .2s;display:flex;align-items:center;gap:8px;}
+.mod-btn:hover{opacity:.8;}
+.mod-btn .mf{font-weight:400;font-size:11px;opacity:.7;}
+.mod-btn .mc{background:rgba(0,0,0,.07);border-radius:20px;padding:1px 8px;font-size:10px;font-weight:700;}
+.mod-btn.pa{border-style:dashed;opacity:.75;}
+.mod-btn.free{border-style:dotted;font-style:italic;opacity:.85;}
+
+/* MODULE VIEW */
+.mod-hdr{padding:20px 24px;margin-bottom:24px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;}
+.mod-hdr h2{font-size:22px;font-weight:700;color:#fff;}
+.mod-hdr p{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px;}
+.mod-hdr-r{text-align:right;}
+.mod-hdr-cnt{font-size:32px;font-weight:700;color:rgba(255,255,255,.15);font-family:'IBM Plex Mono',monospace;}
+.mod-hdr-lbl{font-size:10px;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1px;}
+
+/* ENTRY FORM */
+.eform{background:var(--white);border:1px solid var(--border);margin-bottom:24px;}
+.fhead{padding:11px 18px;background:#FAFAF8;border-bottom:1px solid var(--border);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center;}
+.frow1{display:grid;grid-template-columns:150px 1fr 120px 130px;border-bottom:1px solid var(--border);}
+.frow1 input,.frow1 select{border:none;outline:none;padding:10px 14px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--text);background:transparent;width:100%;}
+.frow1>*+*{border-left:1px solid var(--border);}
+.frow1 select{cursor:pointer;appearance:none;-webkit-appearance:none;}
+.frow1 select.high{color:var(--high);font-weight:600;}
+.frow1 select.med{color:var(--med);font-weight:600;}
+.frow1 select.low{color:var(--low);font-weight:600;}
+.frow1 select.open{color:var(--open);font-weight:600;}
+.frow1 select.inprogress{color:var(--inprogress);font-weight:600;}
+.frow1 select.resolved{color:var(--resolved);font-weight:600;}
+.frow2{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--border);}
+.fta{border-right:1px solid var(--border);}
+.fta:last-child{border-right:none;}
+.fta-lbl{padding:7px 14px;font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);background:#FAFAF8;border-bottom:1px solid var(--border);}
+.fta textarea{width:100%;border:none;outline:none;resize:none;padding:10px 14px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--text);background:transparent;line-height:1.6;min-height:80px;}
+.fta textarea::placeholder{color:#C0BAB0;font-style:italic;}
+.ffoot{padding:11px 18px;display:flex;align-items:center;justify-content:space-between;}
+.fnote{font-size:11px;color:var(--muted);font-style:italic;}
+.btn-save{padding:8px 22px;background:var(--navy);color:#fff;border:none;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background .2s;}
+.btn-save:hover{background:var(--accent);}
+.btn-save:disabled{opacity:.5;cursor:not-allowed;}
+
+/* HISTORY */
+.hist-tb{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.btn-sm{padding:5px 14px;background:var(--accent);color:#fff;border:none;font-family:'IBM Plex Sans',sans-serif;font-size:11px;cursor:pointer;opacity:.9;}
+.btn-sm:hover{opacity:1;}
+.btn-sm-outline{padding:5px 14px;background:transparent;color:var(--muted);border:1px solid var(--border);font-family:'IBM Plex Sans',sans-serif;font-size:11px;cursor:pointer;}
+.btn-sm-outline:hover{border-color:var(--accent);color:var(--accent);}
+.hist-empty{text-align:center;padding:40px;background:var(--white);border:1px dashed var(--border);color:var(--muted);font-size:13px;font-style:italic;}
+
+.h-entry{background:var(--white);border:1px solid var(--border);margin-bottom:10px;animation:fadeUp .25s ease both;}
+.h-entry:hover{border-color:rgba(200,146,42,.35);}
+.h-head{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#FAFAF8;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
+.h-date{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;color:var(--navy);white-space:nowrap;}
+.h-issue{font-size:13px;color:var(--text);flex:1;}
+.h-tog{font-size:11px;color:var(--muted);margin-left:auto;}
+.h-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;padding:16px;}
+.h-body.closed{display:none;}
+.h-sec h4{font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.h-sec p{font-size:12px;color:var(--text);line-height:1.6;}
+.h-sec p.empty{color:#C0BAB0;font-style:italic;}
+.h-foot{padding:8px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.h-meta{font-size:10px;color:var(--border);font-family:'IBM Plex Mono',monospace;}
+.h-actions{display:flex;gap:6px;align-items:center;}
+.btn-del{font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;padding:2px 6px;transition:color .15s;}
+.btn-del:hover{color:var(--high);}
+.status-select{font-size:11px;border:1px solid var(--border);padding:3px 8px;font-family:'IBM Plex Sans',sans-serif;cursor:pointer;background:var(--white);color:var(--text);outline:none;}
+
+/* EDIT MODE */
+.h-entry.editing{border-color:var(--accent);box-shadow:0 0 0 2px rgba(200,146,42,.15);}
+.edit-form{padding:16px;background:#FAFDF8;border-top:1px solid var(--border);}
+.edit-row1{display:grid;grid-template-columns:1fr 120px 130px;gap:8px;margin-bottom:10px;}
+.edit-row1 input,.edit-row1 select{border:1px solid var(--border);padding:8px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--text);outline:none;width:100%;}
+.edit-row1 input:focus,.edit-row1 select:focus{border-color:var(--accent);}
+.edit-row2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;}
+.edit-ta-wrap{display:flex;flex-direction:column;}
+.edit-ta-lbl{font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.edit-ta-wrap textarea{border:1px solid var(--border);padding:8px 12px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--text);outline:none;resize:none;min-height:72px;line-height:1.5;}
+.edit-ta-wrap textarea:focus{border-color:var(--accent);}
+.edit-actions{display:flex;gap:8px;align-items:center;justify-content:space-between;}
+.edit-modified{font-size:10px;color:var(--muted);font-style:italic;font-family:'IBM Plex Mono',monospace;}
+.btn-edit{font-size:11px;color:var(--accent);background:none;border:1px solid var(--accent);cursor:pointer;padding:3px 10px;transition:all .15s;font-family:'IBM Plex Sans',sans-serif;}
+.btn-edit:hover{background:var(--accent);color:#fff;}
+.btn-save-edit{padding:7px 18px;background:var(--accent);color:#fff;border:none;font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:opacity .2s;}
+.btn-save-edit:hover{opacity:.85;}
+.btn-save-edit:disabled{opacity:.5;cursor:not-allowed;}
+.btn-cancel-edit{padding:7px 14px;background:transparent;color:var(--muted);border:1px solid var(--border);font-family:'IBM Plex Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;}
+.btn-cancel-edit:hover{border-color:var(--muted);color:var(--navy);}
+
+/* DASHBOARD */
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+.kpi-card{background:var(--white);border:1px solid var(--border);padding:18px 20px;}
+.kpi-num{font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:var(--navy);line-height:1;}
+.kpi-label{font-size:11px;color:var(--muted);margin-top:6px;text-transform:uppercase;letter-spacing:1px;}
+.kpi-sub{font-size:11px;color:var(--accent);margin-top:4px;font-weight:500;}
+
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;}
+.chart-card{background:var(--white);border:1px solid var(--border);padding:18px 20px;}
+.chart-card h3{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.bar-lbl{font-size:12px;color:var(--text);width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-wrap{flex:1;height:20px;background:var(--bg);border:1px solid var(--border);}
+.bar-fill{height:100%;transition:width .6s ease;}
+.bar-val{font-size:11px;color:var(--muted);width:28px;text-align:right;font-family:'IBM Plex Mono',monospace;}
+
+/* SESSION VIEW */
+.session-header{background:var(--navy);padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;}
+.session-header h2{font-size:20px;font-weight:700;color:#fff;}
+.session-header p{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px;}
+.agenda-item{background:var(--white);border:1px solid var(--border);border-left:4px solid var(--accent);padding:14px 18px;margin-bottom:10px;display:flex;align-items:flex-start;gap:14px;}
+.agenda-num{font-size:20px;font-weight:700;color:var(--border);font-family:'IBM Plex Mono',monospace;min-width:32px;}
+.agenda-content h4{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px;}
+.agenda-content p{font-size:12px;color:var(--muted);line-height:1.5;}
+.agenda-meta{margin-left:auto;text-align:right;white-space:nowrap;}
+
+/* BACKLOG */
+.bl-item{background:var(--white);border:1px solid var(--border);padding:14px 18px;margin-bottom:10px;display:grid;grid-template-columns:1fr 120px 120px 80px;gap:14px;align-items:center;}
+.bl-item:hover{border-color:rgba(200,146,42,.35);}
+.bl-title{font-size:13px;font-weight:500;color:var(--navy);}
+.bl-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+.bl-form{background:var(--white);border:1px solid var(--border);padding:16px 18px;margin-bottom:20px;display:grid;grid-template-columns:1fr 140px 140px 100px auto;gap:10px;align-items:end;}
+.bl-form input,.bl-form select{border:1px solid var(--border);padding:7px 10px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--text);outline:none;width:100%;}
+.bl-form input:focus,.bl-form select:focus{border-color:var(--accent);}
+.bl-form label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;font-size:13px;font-family:'IBM Plex Sans',sans-serif;color:#fff;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:fadeUp .3s ease both;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+@media(max-width:700px){
+  .dash-grid{grid-template-columns:1fr 1fr;}
+  .chart-grid{grid-template-columns:1fr;}
+  .frow1,.frow2,.h-body,.bl-item,.bl-form{grid-template-columns:1fr;}
+  .frow1>*+*{border-left:none;border-top:1px solid var(--border);}
+  .fta{border-right:none;border-bottom:1px solid var(--border);}
+  .owners-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ════ HOME ════ -->
+<div class="view active" id="view-home">
+  <div class="topbar">
+    <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title">Ticket Review — Input Collection</div></div>
+    <div class="tb-right">
+      <button class="btn-nav active" onclick="goDash()">📊 Dashboard</button>
+      <button class="btn-nav" onclick="goSession()">📋 Session View</button>
+      <button class="btn-nav" onclick="goBacklog()">⚙️ Backlog</button>
+      <button class="btn-accent" onclick="exportAll()">⬇ Export All</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="loading-banner" id="home-loading"><div class="loading-dot"></div> Loading data from SharePoint…</div>
+    <div class="error-banner" id="home-error"><span id="home-error-msg">Could not load data.</span><button class="btn-retry" onclick="initData()">↺ Retry</button></div>
+    <div class="instr"><strong>How it works:</strong> Click an owner to browse their modules. Every entry is <strong>dated, timestamped and versioned</strong>. Use the Dashboard for analytics, Session View to prepare the agenda, and Backlog to track system improvements.</div>
+    <div class="filter-bar">
+      <input type="text" id="f-search" placeholder="🔍 Search issues, owners, modules…" oninput="applyFilters()">
+      <select id="f-owner" onchange="applyFilters()"><option value="">All owners</option></select>
+      <select id="f-module" onchange="applyFilters()"><option value="">All modules</option></select>
+      <select id="f-prio" onchange="applyFilters()"><option value="">All priorities</option><option value="high">🔴 High</option><option value="med">🟡 Med</option><option value="low">🟢 Low</option></select>
+      <select id="f-status" onchange="applyFilters()"><option value="">All statuses</option><option value="open">Open</option><option value="inprogress">In Progress</option><option value="resolved">Resolved</option></select>
+      <button class="btn-clear-filter" onclick="clearFilters()">✕ Clear</button>
+    </div>
+    <div class="slabel">Contributors</div>
+    <div class="owners-grid" id="owners-grid"></div>
+    <div class="slabel">All Entries — Global View</div>
+    <table class="gtable"><thead><tr><th>Date</th><th>Owner</th><th>Module</th><th>Issue / Topic</th><th>Priority</th><th>Status</th><th>Fields</th></tr></thead>
+    <tbody id="gtbody"></tbody></table>
+  </div>
+</div>
+
+<!-- ════ OWNER ════ -->
+<div class="view" id="view-owner">
+  <div class="topbar">
+    <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title" id="ov-title"></div></div>
+    <div class="tb-right"><button class="btn-back" onclick="goHome()">← All Contributors</button></div>
+  </div>
+  <div class="wrap">
+    <div class="bc"><span class="bc-lnk" onclick="goHome()">Home</span><span class="bc-sep">›</span><span class="bc-cur" id="ov-bc"></span></div>
+    <div class="owner-hbar" id="ov-hbar"></div>
+  </div>
+</div>
+
+<!-- ════ MODULE ════ -->
+<div class="view" id="view-module">
+  <div class="topbar">
+    <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title" id="mv-title"></div></div>
+    <div class="tb-right"><button class="btn-back" onclick="goOwner()">← Back to Owner</button></div>
+  </div>
+  <div class="wrap">
+    <div class="bc"><span class="bc-lnk" onclick="goHome()">Home</span><span class="bc-sep">›</span><span class="bc-lnk" id="mv-owner-bc" onclick="goOwner()"></span><span class="bc-sep">›</span><span class="bc-cur" id="mv-bc"></span></div>
+    <div class="loading-banner" id="mod-loading"><div class="loading-dot"></div> Saving to SharePoint…</div>
+    <div class="mod-hdr" id="mv-hdr">
+      <div><h2 id="mv-hdr-title"></h2><p id="mv-hdr-sub"></p></div>
+      <div class="mod-hdr-r"><div class="mod-hdr-cnt" id="mv-count">0</div><div class="mod-hdr-lbl">entries</div></div>
+    </div>
+    <div class="slabel">Log New Entry</div>
+    <div class="eform">
+      <div class="fhead"><span>New Entry</span><span id="form-today" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent)"></span></div>
+      <div class="frow1">
+        <input type="date" id="f-date">
+        <input type="text" id="f-issue" placeholder="Issue / ticket / topic title…">
+        <select id="f-prio-entry" onchange="this.className=this.value"><option value="">Priority</option><option value="high">🔴 High</option><option value="med">🟡 Med</option><option value="low">🟢 Low</option></select>
+        <select id="f-status-entry" onchange="this.className=this.value"><option value="open">🔵 Open</option><option value="inprogress">🟡 In Progress</option><option value="resolved">🟢 Resolved</option></select>
+      </div>
+      <div class="frow2">
+        <div class="fta"><div class="fta-lbl">📌 Agenda / Decision needed</div><textarea id="f-agenda" placeholder="What needs to be discussed or decided?"></textarea></div>
+        <div class="fta"><div class="fta-lbl">⚙️ System improvement idea</div><textarea id="f-impr" placeholder="What should go in the backlog?"></textarea></div>
+        <div class="fta"><div class="fta-lbl">💬 Comments / Context</div><textarea id="f-comment" placeholder="Root cause, workaround, context…"></textarea></div>
+      </div>
+      <div class="ffoot"><span class="fnote">Date and issue title are required.</span><button class="btn-save" id="btn-save-entry" onclick="saveEntry()">✓ Save Entry</button></div>
+    </div>
+    <div class="hist-tb">
+      <div class="slabel" style="flex:1;margin-bottom:0">Entry History</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-sm-outline" onclick="exportModule()">⬇ Export module (.xlsx)</button>
+      </div>
+    </div>
+    <div id="hist-list"></div>
+  </div>
+</div>
+
+<!-- ════ DASHBOARD ════ -->
+<div class="view" id="view-dash">
+  <div class="topbar">
+    <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title">Dashboard — Analytics</div></div>
+    <div class="tb-right"><button class="btn-back" onclick="goHome()">← Home</button></div>
+  </div>
+  <div class="wrap">
+    <div class="bc"><span class="bc-lnk" onclick="goHome()">Home</span><span class="bc-sep">›</span><span class="bc-cur">Dashboard</span></div>
+    <div style="margin-top:16px"></div>
+    <div class="dash-grid" id="dash-kpis"></div>
+    <div class="chart-grid">
+      <div class="chart-card"><h3>By Module</h3><div id="chart-module"></div></div>
+      <div class="chart-card"><h3>By Priority</h3><div id="chart-prio"></div></div>
+      <div class="chart-card"><h3>By Status</h3><div id="chart-status"></div></div>
+      <div class="chart-card"><h3>By Owner</h3><div id="chart-owner"></div></div>
+    </div>
+    <div class="slabel">High Priority — Open Items</div>
+    <table class="gtable"><thead><tr><th>Date</th><th>Owner</th><th>Module</th><th>Issue</th><th>Priority</th><th>Status</th></tr></thead>
+    <tbody id="dash-high"></tbody></table>
+  </div>
+</div>
+
+<!-- ════ SESSION VIEW ════ -->
+<div class="view" id="view-session">
+  <div class="topbar">
+    <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title">Session View — Agenda Builder</div></div>
+    <div class="tb-right">
+      <button class="btn-back" onclick="goHome()">← Home</button>
+      <button class="btn-accent" onclick="exportSessionPDF()">⬇ Export Agenda PDF</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="bc"><span class="bc-lnk" onclick="goHome()">Home</span><span class="bc-sep">›</span><span class="bc-cur">Session View</span></div>
+    <div class="session-header" style="margin-top:16px">
+      <div><h2>Next Session Agenda</h2><p id="session-subtitle">Auto-generated from all High priority open items</p></div>
+      <div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(255,255,255,.4)" id="session-date"></div>
+    </div>
+    <div class="slabel">🔴 High Priority — Open & In Progress</div>
+    <div id="session-high"></div>
+    <div class="slabel" style="margin-top:24px">🟡 Medium Priority — For Discussion</div>
+    <div id="session-med"></div>
+    <div class="slabel" style="margin-top:24px">⚙️ Improvement Backlog — Items in Flight</div>
+    <div id="session-backlog"></div>
+  </div>
+</div>
+
+<!-- ════ BACKLOG ════ -->
+<div class="view" id="view-backlog">
+  <div class="topbar">
+    <div class="tb-left"><div class="tb-brand">Nexans HR Digital</div><div class="tb-title">System Improvement Backlog</div></div>
+    <div class="tb-right"><button class="btn-back" onclick="goHome()">← Home</button></div>
+  </div>
+  <div class="wrap">
+    <div class="bc"><span class="bc-lnk" onclick="goHome()">Home</span><span class="bc-sep">›</span><span class="bc-cur">Backlog</span></div>
+    <div style="margin-top:16px"></div>
+    <div class="slabel">Add Improvement</div>
+    <div class="bl-form">
+      <div><label>Improvement Title</label><input type="text" id="bl-title" placeholder="Describe the system improvement…"></div>
+      <div><label>Module</label><select id="bl-mod"><option value="">Select module</option></select></div>
+      <div><label>Owner (Strada)</label><input type="text" id="bl-owner" placeholder="Strada owner…"></div>
+      <div><label>Priority</label><select id="bl-prio"><option value="">—</option><option value="high">🔴 High</option><option value="med">🟡 Med</option><option value="low">🟢 Low</option></select></div>
+      <div><label>&nbsp;</label><button class="btn-save" style="width:100%;padding:7px" onclick="addBacklog()">+ Add</button></div>
+    </div>
+    <div class="slabel">Backlog Items</div>
+    <div id="bl-list"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// POWER AUTOMATE ENDPOINTS
+// Replace these two URLs with your actual Power Automate HTTP trigger URLs
+// ══════════════════════════════════════════════════════════════
+const FLOW_GET  = 'PASTE_YOUR_GET_FLOW_URL_HERE';
+const FLOW_POST = 'PASTE_YOUR_POST_FLOW_URL_HERE';
+
+// ══════════════════════════════════════════════════════════════
+// API LAYER
+// All SharePoint communication goes through these two functions only.
+// fetchAllEntries() — loads everything from SharePoint on init
+// pushEntry()       — creates, updates or deletes a single item
+// ══════════════════════════════════════════════════════════════
+
+async function fetchAllEntries() {
+  const r = await fetch(FLOW_GET);
+  if (!r.ok) throw new Error(`GET flow returned ${r.status}`);
+  const data = await r.json();
+  // The flow returns an array of items. Normalise field names here
+  // so the rest of the app doesn't care about SharePoint internals.
+  return (Array.isArray(data) ? data : data.value || []).map(normalise);
+}
+
+async function pushEntry(action, payload) {
+  // action: 'create' | 'update' | 'delete'
+  const r = await fetch(FLOW_POST, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action, ...payload })
+  });
+  if (!r.ok) throw new Error(`POST flow returned ${r.status}`);
+  // For 'create', the flow returns the new item (with its SharePoint ID)
+  if (action === 'create') {
+    const created = await r.json();
+    return normalise(created);
+  }
+}
+
+// Maps SharePoint column names → internal app field names.
+// Edit this if your SharePoint list uses different column names.
+function normalise(item) {
+  return {
+    spId:        item.ID        || item.id,
+    date:        item.SessionDate ? item.SessionDate.split('T')[0] : (item.date || ''),
+    owner:       item.Owner     || item.owner     || '',
+    module:      item.Module    || item.module    || '',
+    issue:       item.Title     || item.issue     || '',
+    priority:    item.Priority  || item.priority  || '',
+    status:      item.Status    || item.status    || 'open',
+    agenda:      item.Agenda    || item.agenda    || '',
+    improvement: item.Improvement || item.improvement || '',
+    comment:     item.Comment   || item.comment   || '',
+    savedAt:     item.Created   ? new Date(item.Created).getTime() : (item.savedAt || Date.now()),
+    modifiedAt:  item.Modified  ? new Date(item.Modified).getTime() : (item.modifiedAt || null),
+  };
+}
+
+// ══════════════════════════════════════════════════════════════
+// IN-MEMORY STORE
+// Single source of truth while the page is open.
+// All reads come from here; all writes go to SharePoint then update here.
+// ══════════════════════════════════════════════════════════════
+let store = []; // flat array of all entries across all owners & modules
+
+function getCached(ownerId, mod) {
+  return store.filter(e => e.owner === ownerId && e.module === mod);
+}
+function allEntries() { return store; }
+function total(ownerId) { return store.filter(e => e.owner === ownerId).length; }
+
+// ══════════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════════
+const OWNERS = [
+  {id:'paulina',initials:'PM',color:'#2D6A9F',name:'Paulina Marroquin',role:'HR Digital Employee Lifecycle Manager, Americas & APAC · Compensation Lead',modules:['COMP','VP','PA','FREE']},
+  {id:'margot', initials:'MF',color:'#2D8A6A',name:'Margot Fouse',      role:'HR Digital Employee Lifecycle Manager Europe · Core HR Lead',modules:['EC','ONB','PA','FREE']},
+  {id:'dounia', initials:'DB',color:'#7A3DAA',name:'Dounia Ben Cheikh', role:'HR Digital Talent Management Stream Lead & Global User',modules:['PMGM','CPM','S&D','CDP','RCM','RMK','PA','FREE']},
+  {id:'marta',  initials:'MZ',color:'#B05A20',name:'Marta Zelazniewicz',role:'IS HR & Legal Domain Manager',modules:['PA','FREE']},
+  {id:'jerome', initials:'JP',color:'#1A7A7A',name:'Jerome Potier',     role:'Group HRIS Director',modules:['PA','FREE']}
+];
+
+const MOD_LABELS = {
+  COMP:'Compensation',VP:'Variable Pay',EC:'Employee Central',ONB:'Onboarding',
+  PMGM:'Performance & Goals',CPM:'Continuous Performance','S&D':'Succession & Development',
+  CDP:'Career Dev. Planning',RCM:'Recruiting',RMK:'Recruiting Marketing',PA:'People Analytics',FREE:'Free Topic'
+};
+
+let backlogItems = [];
+let curOwner = null, curMod = null;
+
+// ══════════════════════════════════════════════════════════════
+// INIT — loads all data once on page open
+// ══════════════════════════════════════════════════════════════
+async function initData() {
+  setLoading('home-loading', true);
+  setError('home-error', false);
+  try {
+    const entries = await fetchAllEntries();
+    store = entries;
+    renderHome();
+  } catch (err) {
+    console.error('initData failed:', err);
+    setError('home-error', true, 'Could not reach SharePoint. Check your flow URL or network. ' + err.message);
+  } finally {
+    setLoading('home-loading', false);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// TOAST / LOADING / ERROR HELPERS
+// ══════════════════════════════════════════════════════════════
+function toast(msg, err = false) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.style.background = err ? '#C02A2A' : '#0D1B2A';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
+
+function setLoading(id, visible) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('visible', visible);
+}
+
+function setError(id, visible, msg = '') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('visible', visible);
+  if (msg) { const m = document.getElementById(id + '-msg'); if (m) m.textContent = msg; }
+}
+
+// ══════════════════════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════════════════════
+function show(id) { document.querySelectorAll('.view').forEach(v => v.classList.remove('active')); document.getElementById('view-' + id).classList.add('active'); window.scrollTo(0, 0); }
+function goHome()    { renderHome();    show('home'); }
+function goOwner()   { renderOwner(curOwner); show('owner'); }
+function goDash()    { renderDash();    show('dash'); }
+function goSession() { renderSession(); show('session'); }
+function goBacklog() { renderBacklog(); show('backlog'); }
+
+// ══════════════════════════════════════════════════════════════
+// FILTERS
+// ══════════════════════════════════════════════════════════════
+function applyFilters() {
+  const search = document.getElementById('f-search').value.toLowerCase();
+  const owner  = document.getElementById('f-owner').value;
+  const module = document.getElementById('f-module').value;
+  const prio   = document.getElementById('f-prio').value;
+  const status = document.getElementById('f-status').value;
+  renderGlobal({ search, owner, module, prio, status });
+}
+function clearFilters() {
+  ['f-search','f-owner','f-module','f-prio','f-status'].forEach(id => { const el = document.getElementById(id); if (el.tagName === 'INPUT') el.value = ''; else el.selectedIndex = 0; });
+  renderGlobal({});
+}
+function initFilters() {
+  const ownerSel = document.getElementById('f-owner');
+  OWNERS.forEach(o => { const op = document.createElement('option'); op.value = o.id; op.textContent = o.name.split(' ')[0]; ownerSel.appendChild(op); });
+  const modSel = document.getElementById('f-module');
+  Object.entries(MOD_LABELS).forEach(([k, v]) => { const op = document.createElement('option'); op.value = k; op.textContent = `${k} — ${v}`; modSel.appendChild(op); });
+  const blMod = document.getElementById('bl-mod');
+  Object.entries(MOD_LABELS).forEach(([k, v]) => { const op = document.createElement('option'); op.value = k; op.textContent = `${k} — ${v}`; blMod.appendChild(op); });
+}
+
+// ══════════════════════════════════════════════════════════════
+// HOME
+// ══════════════════════════════════════════════════════════════
+function renderHome() {
+  const grid = document.getElementById('owners-grid');
+  grid.innerHTML = '';
+  OWNERS.forEach((o, i) => {
+    const cnt = total(o.id);
+    const allE = store.filter(e => e.owner === o.id).sort((a, b) => b.savedAt - a.savedAt);
+    const lastD = allE.length ? allE[0].date || '—' : null;
+    const card = document.createElement('div');
+    card.className = 'owner-card'; card.style.animationDelay = (i * .06) + 's';
+    card.onclick = () => { curOwner = o.id; renderOwner(o.id); show('owner'); };
+    const pills = o.modules.map(m => {
+      const isPA = m === 'PA', isFREE = m === 'FREE';
+      const cls = isPA ? ' pa' : isFREE ? ' free' : '';
+      return `<span class="chip${cls}" style="color:${o.color};border-color:${o.color}" onclick="event.stopPropagation();openMod('${o.id}','${m}')" title="${MOD_LABELS[m] || m}">${isFREE ? '+ Free Topic' : m}</span>`;
+    }).join('');
+    card.innerHTML = `<div class="oc-head"><div class="ava" style="background:${o.color}">${o.initials}</div><div><div class="ava-name">${o.name}</div><div class="ava-role">${o.role}</div></div></div>
+    <div class="chips">${pills}</div>
+    <div class="oc-footer"><div class="oc-count"><strong>${cnt}</strong> entr${cnt === 1 ? 'y' : 'ies'}</div><div class="oc-last">${lastD ? 'Last: ' + lastD : 'No entries yet'}</div></div>`;
+    grid.appendChild(card);
+  });
+  renderGlobal({});
+}
+
+function renderGlobal(f = {}) {
+  const tbody = document.getElementById('gtbody');
+  tbody.innerHTML = '';
+  let rows = store.map(e => {
+    const o = OWNERS.find(x => x.id === e.owner);
+    return o ? { o, m: e.module, e } : null;
+  }).filter(Boolean);
+  rows.sort((a, b) => (b.e.date || '').localeCompare(a.e.date || ''));
+  if (f.search) rows = rows.filter(({ o, m, e }) => `${e.issue} ${o.name} ${m}`.toLowerCase().includes(f.search));
+  if (f.owner)  rows = rows.filter(({ o }) => o.id === f.owner);
+  if (f.module) rows = rows.filter(({ m }) => m === f.module);
+  if (f.prio)   rows = rows.filter(({ e }) => e.priority === f.prio);
+  if (f.status) rows = rows.filter(({ e }) => (e.status || 'open') === f.status);
+  if (!rows.length) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--muted);font-style:italic;padding:24px">No entries${Object.values(f).some(Boolean) ? ' matching filters' : ' yet'}.</td></tr>`; return; }
+  rows.forEach(({ o, m, e }) => {
+    const pr = e.priority, st = e.status || 'open';
+    const pbadge = pr ? `<span class="prio-badge pb-${pr}">${pr.toUpperCase()}</span>` : '—';
+    const sbadge = `<span class="sbadge sb-${st}">${st === 'inprogress' ? 'In Progress' : st.charAt(0).toUpperCase() + st.slice(1)}</span>`;
+    const fields = [e.agenda ? '📌' : '', e.improvement ? '⚙️' : '', e.comment ? '💬' : ''].join(' ').trim() || '—';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${e.date || '—'}</td><td>${o.name.split(' ')[0]}</td>
+    <td class="lnk" onclick="openMod('${o.id}','${m}')">${m} <span style="font-weight:400;opacity:.55;font-size:10px">${MOD_LABELS[m] || ''}</span></td>
+    <td>${e.issue || '—'}</td><td>${pbadge}</td><td>${sbadge}</td><td style="font-size:13px">${fields}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// OWNER
+// ══════════════════════════════════════════════════════════════
+function renderOwner(oid) {
+  const o = OWNERS.find(x => x.id === oid); curOwner = oid;
+  document.getElementById('ov-title').textContent = o.name;
+  document.getElementById('ov-bc').textContent = o.name;
+  const hbar = document.getElementById('ov-hbar');
+  hbar.innerHTML = `<div class="ava" style="background:${o.color};width:46px;height:46px;font-size:13px">${o.initials}</div>
+  <div class="ohb-info"><h2>${o.name}</h2><p>${o.role}</p><div class="mod-btns" id="ov-mods"></div></div>`;
+  const wrap = hbar.querySelector('#ov-mods');
+  o.modules.forEach(m => {
+    const cnt = getCached(oid, m).length, isPA = m === 'PA', isFREE = m === 'FREE';
+    const btn = document.createElement('button');
+    btn.className = `mod-btn${isPA ? ' pa' : isFREE ? ' free' : ''}`;
+    btn.style.cssText = `color:${o.color};border-color:${o.color}`;
+    btn.innerHTML = `${isFREE ? '+ Free Topic' : m} <span class="mf">${MOD_LABELS[m] || m}</span> <span class="mc">${cnt}</span>`;
+    btn.onclick = () => openMod(oid, m); wrap.appendChild(btn);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// MODULE
+// ══════════════════════════════════════════════════════════════
+function openMod(oid, mod) {
+  curOwner = oid; curMod = mod;
+  const o = OWNERS.find(x => x.id === oid), label = MOD_LABELS[mod] || mod, isFREE = mod === 'FREE';
+  const td = isFREE ? label : `${mod} — ${label}`, bc = isFREE ? label : `${mod} · ${label}`;
+  document.getElementById('mv-title').textContent = td;
+  document.getElementById('mv-owner-bc').textContent = o.name;
+  document.getElementById('mv-bc').textContent = bc;
+  const hdr = document.getElementById('mv-hdr'); hdr.style.background = o.color;
+  document.getElementById('mv-hdr-title').textContent = td;
+  document.getElementById('mv-hdr-sub').textContent = `Owner: ${o.name}`;
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('f-date').value = today;
+  document.getElementById('form-today').textContent = today;
+  ['f-issue','f-agenda','f-impr','f-comment'].forEach(id => { document.getElementById(id).value = ''; });
+  const ps = document.getElementById('f-prio-entry'); ps.selectedIndex = 0; ps.className = '';
+  const ss = document.getElementById('f-status-entry'); ss.selectedIndex = 0; ss.className = '';
+  show('module');
+  renderHist(oid, mod);
+}
+
+function renderHist(oid, mod) {
+  const entries = getCached(oid, mod).slice().sort((a, b) => (b.date || '').localeCompare(a.date || '') || b.savedAt - a.savedAt);
+  document.getElementById('mv-count').textContent = entries.length;
+  const el = document.getElementById('hist-list');
+  if (!entries.length) { el.innerHTML = `<div class="hist-empty">No entries yet. Use the form above to log the first one.</div>`; return; }
+  el.innerHTML = '';
+  entries.forEach(e => {
+    const pr = e.priority, st = e.status || 'open';
+    const pbadge = pr ? `<span class="prio-badge pb-${pr}">${pr.toUpperCase()}</span>` : '';
+    const sbadge = `<span class="sbadge sb-${st}">${st === 'inprogress' ? 'In Progress' : st.charAt(0).toUpperCase() + st.slice(1)}</span>`;
+    const modLine = e.modifiedAt ? `· Modified ${new Date(e.modifiedAt).toLocaleString()}` : '';
+    const div = document.createElement('div'); div.className = 'h-entry'; div.dataset.id = e.spId;
+    div.innerHTML = `
+      <div class="h-head" onclick="toggleH(this)">
+        <span class="h-date">${e.date || '—'}</span>
+        <span class="h-issue">${e.issue || '(no title)'}</span>
+        ${pbadge}${sbadge}
+        <span class="h-tog">▼</span>
+      </div>
+      <div class="h-body">
+        <div class="h-sec"><h4>📌 Agenda / Decision</h4><p class="${e.agenda ? '' : 'empty'}">${e.agenda || 'Not specified'}</p></div>
+        <div class="h-sec"><h4>⚙️ System Improvement</h4><p class="${e.improvement ? '' : 'empty'}">${e.improvement || 'Not specified'}</p></div>
+        <div class="h-sec"><h4>💬 Comments</h4><p class="${e.comment ? '' : 'empty'}">${e.comment || 'Not specified'}</p></div>
+      </div>
+      <div class="h-foot">
+        <span class="h-meta">Logged ${new Date(e.savedAt).toLocaleString()} <span style="color:var(--accent)">${modLine}</span></span>
+        <div class="h-actions">
+          <button class="btn-edit" onclick="editEntry(${e.spId})">✏️ Edit</button>
+          <select class="status-select" onchange="updateStatus(${e.spId},this.value)" title="Update status">
+            <option value="open"       ${st === 'open'       ? 'selected' : ''}>🔵 Open</option>
+            <option value="inprogress" ${st === 'inprogress' ? 'selected' : ''}>🟡 In Progress</option>
+            <option value="resolved"   ${st === 'resolved'   ? 'selected' : ''}>🟢 Resolved</option>
+          </select>
+          <button class="btn-del" onclick="delEntry(${e.spId})">✕</button>
+        </div>
+      </div>`;
+    el.appendChild(div);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// SAVE NEW ENTRY
+// ══════════════════════════════════════════════════════════════
+async function saveEntry() {
+  const date  = document.getElementById('f-date').value;
+  const issue = document.getElementById('f-issue').value.trim();
+  if (!date || !issue) { alert('Please fill in the date and issue/topic title.'); return; }
+
+  const btn = document.getElementById('btn-save-entry');
+  btn.textContent = 'Saving…'; btn.disabled = true;
+  setLoading('mod-loading', true);
+
+  const payload = {
+    owner:       curOwner,
+    module:      curMod,
+    date,
+    issue,
+    priority:    document.getElementById('f-prio-entry').value,
+    status:      document.getElementById('f-status-entry').value || 'open',
+    agenda:      document.getElementById('f-agenda').value.trim(),
+    improvement: document.getElementById('f-impr').value.trim(),
+    comment:     document.getElementById('f-comment').value.trim(),
+  };
+
+  try {
+    const saved = await pushEntry('create', payload);
+    store.push(saved);
+    ['f-issue','f-agenda','f-impr','f-comment'].forEach(id => { document.getElementById(id).value = ''; });
+    const ps = document.getElementById('f-prio-entry'); ps.selectedIndex = 0; ps.className = '';
+    renderHist(curOwner, curMod);
+    toast('Entry saved ✓');
+  } catch (err) {
+    console.error('saveEntry failed:', err);
+    toast('Save failed — check your flow URL', true);
+  } finally {
+    btn.textContent = '✓ Save Entry'; btn.disabled = false;
+    setLoading('mod-loading', false);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// UPDATE STATUS (inline dropdown)
+// ══════════════════════════════════════════════════════════════
+async function updateStatus(spId, status) {
+  const entry = store.find(e => e.spId == spId);
+  if (!entry) return;
+  const prev = entry.status;
+  entry.status = status; // optimistic update
+  renderHist(curOwner, curMod);
+  try {
+    await pushEntry('update', { spId, status });
+    toast(`Status → ${status}`);
+  } catch (err) {
+    entry.status = prev; // rollback
+    renderHist(curOwner, curMod);
+    toast('Update failed', true);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// DELETE ENTRY
+// ══════════════════════════════════════════════════════════════
+async function delEntry(spId) {
+  if (!confirm('Delete this entry?')) return;
+  const prev = [...store];
+  store = store.filter(e => e.spId != spId); // optimistic
+  renderHist(curOwner, curMod);
+  try {
+    await pushEntry('delete', { spId });
+    toast('Entry deleted');
+  } catch (err) {
+    store = prev; // rollback
+    renderHist(curOwner, curMod);
+    toast('Delete failed', true);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// EDIT ENTRY
+// ══════════════════════════════════════════════════════════════
+function editEntry(spId) {
+  document.querySelectorAll('.edit-form').forEach(f => f.remove());
+  document.querySelectorAll('.h-entry.editing').forEach(d => d.classList.remove('editing'));
+  const e = store.find(x => x.spId == spId);
+  if (!e) return;
+  const entryDiv = document.querySelector(`.h-entry[data-id="${spId}"]`);
+  if (!entryDiv) return;
+  entryDiv.classList.add('editing');
+  const body = entryDiv.querySelector('.h-body');
+  const tog  = entryDiv.querySelector('.h-tog');
+  body.classList.remove('closed'); tog.textContent = '▼';
+  const form = document.createElement('div');
+  form.className = 'edit-form';
+  form.innerHTML = `
+    <div class="edit-row1">
+      <input type="text" id="edit-issue-${spId}" value="${e.issue || ''}" placeholder="Issue / topic title…">
+      <select id="edit-prio-${spId}" onchange="this.className=this.value">
+        <option value="">Priority</option>
+        <option value="high" ${e.priority === 'high' ? 'selected' : ''}>🔴 High</option>
+        <option value="med"  ${e.priority === 'med'  ? 'selected' : ''}>🟡 Med</option>
+        <option value="low"  ${e.priority === 'low'  ? 'selected' : ''}>🟢 Low</option>
+      </select>
+      <select id="edit-status-${spId}" onchange="this.className=this.value">
+        <option value="open"       ${(e.status || 'open') === 'open'       ? 'selected' : ''}>🔵 Open</option>
+        <option value="inprogress" ${e.status === 'inprogress'             ? 'selected' : ''}>🟡 In Progress</option>
+        <option value="resolved"   ${e.status === 'resolved'               ? 'selected' : ''}>🟢 Resolved</option>
+      </select>
+    </div>
+    <div class="edit-row2">
+      <div class="edit-ta-wrap"><div class="edit-ta-lbl">📌 Agenda / Decision</div><textarea id="edit-agenda-${spId}"   placeholder="Agenda or decision needed…">${e.agenda      || ''}</textarea></div>
+      <div class="edit-ta-wrap"><div class="edit-ta-lbl">⚙️ System Improvement</div><textarea id="edit-impr-${spId}"    placeholder="System improvement idea…">${e.improvement  || ''}</textarea></div>
+      <div class="edit-ta-wrap"><div class="edit-ta-lbl">💬 Comments</div><textarea id="edit-comment-${spId}" placeholder="Context, root cause…">${e.comment      || ''}</textarea></div>
+    </div>
+    <div class="edit-actions">
+      <span class="edit-modified">Editing entry from ${e.date || '—'}</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn-cancel-edit" onclick="cancelEdit(${spId})">Cancel</button>
+        <button class="btn-save-edit" id="edit-btn-${spId}" onclick="saveEdit(${spId})">✓ Save Changes</button>
+      </div>
+    </div>`;
+  entryDiv.appendChild(form);
+  const ps = document.getElementById(`edit-prio-${spId}`);   if (ps && e.priority) ps.className = e.priority;
+  const ss = document.getElementById(`edit-status-${spId}`); if (ss && e.status)   ss.className = e.status;
+  form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function cancelEdit(spId) {
+  const entryDiv = document.querySelector(`.h-entry[data-id="${spId}"]`);
+  if (entryDiv) { entryDiv.classList.remove('editing'); const f = entryDiv.querySelector('.edit-form'); if (f) f.remove(); }
+}
+
+async function saveEdit(spId) {
+  const e = store.find(x => x.spId == spId);
+  if (!e) return;
+  const btn = document.getElementById(`edit-btn-${spId}`);
+  if (btn) { btn.textContent = 'Saving…'; btn.disabled = true; }
+  const updated = {
+    spId,
+    issue:       document.getElementById(`edit-issue-${spId}`).value.trim()   || e.issue,
+    priority:    document.getElementById(`edit-prio-${spId}`).value,
+    status:      document.getElementById(`edit-status-${spId}`).value,
+    agenda:      document.getElementById(`edit-agenda-${spId}`).value.trim(),
+    improvement: document.getElementById(`edit-impr-${spId}`).value.trim(),
+    comment:     document.getElementById(`edit-comment-${spId}`).value.trim(),
+  };
+  try {
+    await pushEntry('update', updated);
+    // Update in-memory store
+    Object.assign(e, updated, { modifiedAt: Date.now() });
+    renderHist(curOwner, curMod);
+    toast('Entry updated ✓');
+  } catch (err) {
+    toast('Update failed', true);
+    if (btn) { btn.textContent = '✓ Save Changes'; btn.disabled = false; }
+  }
+}
+
+function toggleH(hd) { const b = hd.nextElementSibling, t = hd.querySelector('.h-tog'); b.classList.toggle('closed'); t.textContent = b.classList.contains('closed') ? '▶' : '▼'; }
+
+// ══════════════════════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════════════════════
+function renderDash() {
+  const all  = allEntries();
+  const open = all.filter(e => (e.status || 'open') === 'open').length;
+  const inp  = all.filter(e => e.status === 'inprogress').length;
+  const res  = all.filter(e => e.status === 'resolved').length;
+  const high = all.filter(e => e.priority === 'high').length;
+  document.getElementById('dash-kpis').innerHTML = `
+    <div class="kpi-card"><div class="kpi-num">${all.length}</div><div class="kpi-label">Total Entries</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--high)">${high}</div><div class="kpi-label">High Priority</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--open)">${open}</div><div class="kpi-label">Open</div><div class="kpi-sub">${inp} In Progress</div></div>
+    <div class="kpi-card"><div class="kpi-num" style="color:var(--resolved)">${res}</div><div class="kpi-label">Resolved</div><div class="kpi-sub">${all.length ? Math.round(res / all.length * 100) : 0}% resolution rate</div></div>`;
+  const modCount = {};
+  all.forEach(e => { modCount[e.module] = (modCount[e.module] || 0) + 1; });
+  renderBarChart('chart-module', modCount, MOD_LABELS);
+  renderBarChart('chart-prio',   { 'High': all.filter(e => e.priority === 'high').length, 'Med': all.filter(e => e.priority === 'med').length, 'Low': all.filter(e => e.priority === 'low').length, '—': all.filter(e => !e.priority).length });
+  renderBarChart('chart-status', { 'Open': open, 'In Progress': inp, 'Resolved': res });
+  const ownerCount = {};
+  OWNERS.forEach(o => { const cnt = store.filter(e => e.owner === o.id).length; if (cnt) ownerCount[o.name.split(' ')[0]] = cnt; });
+  renderBarChart('chart-owner', ownerCount);
+  const tbody = document.getElementById('dash-high'); tbody.innerHTML = '';
+  const highOpen = allEntriesWithMeta().filter(({ e }) => e.priority === 'high' && (e.status || 'open') !== 'resolved').sort((a, b) => (b.e.date || '').localeCompare(a.e.date || ''));
+  if (!highOpen.length) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);font-style:italic;padding:20px">No high priority open items 🎉</td></tr>`; return; }
+  highOpen.forEach(({ o, m, e }) => {
+    const st = e.status || 'open';
+    tbody.innerHTML += `<tr><td>${e.date || '—'}</td><td>${o.name.split(' ')[0]}</td>
+    <td class="lnk" onclick="openMod('${o.id}','${m}')">${m}</td>
+    <td>${e.issue}</td><td><span class="prio-badge pb-high">HIGH</span></td>
+    <td><span class="sbadge sb-${st}">${st === 'inprogress' ? 'In Progress' : st.charAt(0).toUpperCase() + st.slice(1)}</span></td></tr>`;
+  });
+}
+
+function allEntriesWithMeta() {
+  return store.map(e => {
+    const o = OWNERS.find(x => x.id === e.owner);
+    return o ? { o, m: e.module, e } : null;
+  }).filter(Boolean);
+}
+
+function renderBarChart(containerId, data, labels = {}) {
+  const el = document.getElementById(containerId); el.innerHTML = '';
+  const max = Math.max(...Object.values(data), 1);
+  Object.entries(data).sort((a, b) => b[1] - a[1]).forEach(([k, v]) => {
+    if (!v) return;
+    const lbl = labels[k] || k;
+    el.innerHTML += `<div class="bar-row">
+      <div class="bar-lbl" title="${lbl}">${lbl}</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${Math.round(v / max * 100)}%;background:var(--accent)"></div></div>
+      <div class="bar-val">${v}</div>
+    </div>`;
+  });
+  if (!el.innerHTML) el.innerHTML = '<p style="font-size:12px;color:var(--muted);font-style:italic">No data yet</p>';
+}
+
+// ══════════════════════════════════════════════════════════════
+// SESSION VIEW
+// ══════════════════════════════════════════════════════════════
+function renderSession() {
+  document.getElementById('session-date').textContent = `Generated: ${new Date().toLocaleDateString()}`;
+  const allMeta  = allEntriesWithMeta();
+  const highOpen = allMeta.filter(({ e }) => e.priority === 'high' && (e.status || 'open') !== 'resolved').sort((a, b) => (b.e.date || '').localeCompare(a.e.date || ''));
+  const medOpen  = allMeta.filter(({ e }) => e.priority === 'med'  && (e.status || 'open') !== 'resolved').sort((a, b) => (b.e.date || '').localeCompare(a.e.date || ''));
+  const blInFlight = backlogItems.filter(b => b.status !== 'done');
+  renderAgendaItems('session-high', highOpen, 'high');
+  renderAgendaItems('session-med',  medOpen,  'med');
+  renderBacklogSession('session-backlog', blInFlight);
+}
+
+function renderAgendaItems(containerId, items, prio) {
+  const el = document.getElementById(containerId); el.innerHTML = '';
+  if (!items.length) { el.innerHTML = `<div class="hist-empty">No ${prio} priority open items.</div>`; return; }
+  items.forEach(({ o, m, e }, i) => {
+    const st = e.status || 'open';
+    el.innerHTML += `<div class="agenda-item">
+      <div class="agenda-num">${String(i + 1).padStart(2, '0')}</div>
+      <div class="agenda-content"><h4>${e.issue}</h4><p>${o.name.split(' ')[0]} · ${MOD_LABELS[m] || m}${e.agenda ? ' · ' + e.agenda : ''}</p></div>
+      <div class="agenda-meta">
+        <span class="prio-badge pb-${prio}" style="display:block;margin-bottom:4px">${prio.toUpperCase()}</span>
+        <span class="sbadge sb-${st}" style="font-size:10px">${st === 'inprogress' ? 'In Progress' : st.charAt(0).toUpperCase() + st.slice(1)}</span>
+      </div>
+    </div>`;
+  });
+}
+
+function renderBacklogSession(containerId, items) {
+  const el = document.getElementById(containerId); el.innerHTML = '';
+  if (!items.length) { el.innerHTML = `<div class="hist-empty">No backlog items in flight. Add items in the Backlog tab.</div>`; return; }
+  items.forEach((b, i) => {
+    el.innerHTML += `<div class="agenda-item">
+      <div class="agenda-num">${String(i + 1).padStart(2, '0')}</div>
+      <div class="agenda-content"><h4>${b.title}</h4><p>${MOD_LABELS[b.mod] || b.mod || '—'} · Owner: ${b.owner || 'TBD'}</p></div>
+      <div class="agenda-meta"><span class="prio-badge pb-${b.prio || 'med'}">${(b.prio || 'med').toUpperCase()}</span></div>
+    </div>`;
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// BACKLOG (in-memory only — low stakes, no SharePoint needed)
+// ══════════════════════════════════════════════════════════════
+function addBacklog() {
+  const title = document.getElementById('bl-title').value.trim();
+  if (!title) { alert('Please enter an improvement title.'); return; }
+  backlogItems.push({ id: Date.now(), title, mod: document.getElementById('bl-mod').value, owner: document.getElementById('bl-owner').value.trim(), prio: document.getElementById('bl-prio').value, status: 'open', createdAt: Date.now() });
+  document.getElementById('bl-title').value = ''; document.getElementById('bl-owner').value = '';
+  document.getElementById('bl-mod').selectedIndex = 0; document.getElementById('bl-prio').selectedIndex = 0;
+  renderBacklog(); toast('Backlog item added ✓');
+}
+
+function renderBacklog() {
+  const el = document.getElementById('bl-list'); el.innerHTML = '';
+  if (!backlogItems.length) { el.innerHTML = `<div class="hist-empty">No backlog items yet. Add system improvements above.</div>`; return; }
+  backlogItems.forEach((b, i) => {
+    const st = b.status || 'open';
+    el.innerHTML += `<div class="bl-item">
+      <div><div class="bl-title">${b.title}</div><div class="bl-sub">${MOD_LABELS[b.mod] || b.mod || '—'} · Strada owner: ${b.owner || 'TBD'}</div></div>
+      <span class="prio-badge pb-${b.prio || 'med'}">${(b.prio || 'med').toUpperCase()}</span>
+      <select class="status-select" onchange="updateBacklogStatus(${i},this.value)">
+        <option value="open"       ${st === 'open'       ? 'selected' : ''}>🔵 Open</option>
+        <option value="inprogress" ${st === 'inprogress' ? 'selected' : ''}>🟡 In Progress</option>
+        <option value="done"       ${st === 'done'       ? 'selected' : ''}>🟢 Done</option>
+      </select>
+      <button class="btn-del" onclick="deleteBacklog(${i})">✕</button>
+    </div>`;
+  });
+}
+
+function updateBacklogStatus(i, status) { backlogItems[i].status = status; renderBacklog(); }
+function deleteBacklog(i) { if (!confirm('Delete this item?')) return; backlogItems.splice(i, 1); renderBacklog(); }
+
+// ══════════════════════════════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════════════════════════════
+function toXLSX(rows, sheetName, filename) {
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols'] = [{ wch: 12 }, { wch: 20 }, { wch: 12 }, { wch: 40 }, { wch: 10 }, { wch: 10 }, { wch: 40 }, { wch: 40 }, { wch: 40 }, { wch: 22 }];
+  const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, sheetName); XLSX.writeFile(wb, filename);
+}
+
+function exportModule() {
+  const o = OWNERS.find(x => x.id === curOwner), label = MOD_LABELS[curMod] || curMod;
+  const entries = getCached(curOwner, curMod);
+  const rows = [
+    ['Nexans HR Digital — Ticket Review'],
+    [`Module: ${curMod} — ${label}`, `Owner: ${o.name}`, `Exported: ${new Date().toLocaleString()}`],
+    [],
+    ['Date','Owner','Module','Issue / Topic','Priority','Status','Agenda / Decision','System Improvement','Comments','Logged At']
+  ];
+  entries.forEach(e => rows.push([e.date || '', o.name, label, e.issue || '', e.priority?.toUpperCase() || '', (e.status || 'open'), e.agenda || '', e.improvement || '', e.comment || '', new Date(e.savedAt).toLocaleString()]));
+  toXLSX(rows, curMod, `Nexans_${curMod}_${curOwner}.xlsx`);
+}
+
+function exportAll() {
+  const rows = [
+    ['Nexans HR Digital — Ticket Review Consolidated Inputs'],
+    [`Exported: ${new Date().toLocaleString()}`],
+    [],
+    ['Date','Owner','Role','Module','Issue / Topic','Priority','Status','Agenda / Decision','System Improvement','Comments','Logged At']
+  ];
+  store.forEach(e => {
+    const o = OWNERS.find(x => x.id === e.owner);
+    if (!o) return;
+    rows.push([e.date || '', o.name, o.role, MOD_LABELS[e.module] || e.module, e.issue || '', e.priority?.toUpperCase() || '', (e.status || 'open'), e.agenda || '', e.improvement || '', e.comment || '', new Date(e.savedAt).toLocaleString()]);
+  });
+  toXLSX(rows, 'All Inputs', 'Nexans_TicketReview_AllInputs.xlsx');
+}
+
+function exportSessionPDF() {
+  const allMeta  = allEntriesWithMeta();
+  const highOpen = allMeta.filter(({ e }) => e.priority === 'high' && (e.status || 'open') !== 'resolved');
+  const medOpen  = allMeta.filter(({ e }) => e.priority === 'med'  && (e.status || 'open') !== 'resolved');
+  const blInFlight = backlogItems.filter(b => b.status !== 'done');
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <style>
+    body{font-family:'Segoe UI',sans-serif;max-width:800px;margin:40px auto;color:#1A1A1A;font-size:13px;}
+    h1{font-size:22px;color:#0D1B2A;margin-bottom:4px;}
+    .sub{color:#8A8680;font-size:12px;margin-bottom:28px;}
+    h2{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8A8680;margin:24px 0 12px;border-bottom:1px solid #D6D0C6;padding-bottom:6px;}
+    .item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid #F0EDE8;}
+    .num{font-size:20px;font-weight:700;color:#D6D0C6;min-width:28px;}
+    .item-title{font-weight:600;color:#0D1B2A;margin-bottom:3px;}
+    .item-sub{font-size:11px;color:#8A8680;}
+    .badge{display:inline-block;padding:2px 8px;font-size:10px;font-weight:700;margin-left:8px;}
+    .high{background:#fdecea;color:#C02A2A;} .med{background:#fef3e2;color:#B07010;}
+    .footer{margin-top:40px;font-size:10px;color:#C0BAB0;text-align:center;}
+    @media print{body{margin:20px;}}
+  </style></head><body>
+  <h1>Ticket Review — Session Agenda</h1>
+  <div class="sub">Generated: ${new Date().toLocaleDateString()} · Nexans HR Digital</div>
+  <h2>🔴 High Priority — Open Items (${highOpen.length})</h2>
+  ${highOpen.map(({ o, m, e }, i) => `<div class="item"><div class="num">${String(i + 1).padStart(2, '0')}</div><div><div class="item-title">${e.issue}<span class="badge high">HIGH</span></div><div class="item-sub">${o.name.split(' ')[0]} · ${MOD_LABELS[m] || m}${e.agenda ? ' · ' + e.agenda : ''}</div></div></div>`).join('') || '<p style="color:#C0BAB0;font-style:italic">No high priority open items.</p>'}
+  <h2>🟡 Medium Priority — For Discussion (${medOpen.length})</h2>
+  ${medOpen.map(({ o, m, e }, i) => `<div class="item"><div class="num">${String(i + 1).padStart(2, '0')}</div><div><div class="item-title">${e.issue}<span class="badge med">MED</span></div><div class="item-sub">${o.name.split(' ')[0]} · ${MOD_LABELS[m] || m}${e.agenda ? ' · ' + e.agenda : ''}</div></div></div>`).join('') || '<p style="color:#C0BAB0;font-style:italic">No medium priority open items.</p>'}
+  <h2>⚙️ Improvement Backlog — In Flight (${blInFlight.length})</h2>
+  ${blInFlight.map((b, i) => `<div class="item"><div class="num">${String(i + 1).padStart(2, '0')}</div><div><div class="item-title">${b.title}</div><div class="item-sub">${MOD_LABELS[b.mod] || b.mod || '—'} · Strada owner: ${b.owner || 'TBD'}</div></div></div>`).join('') || '<p style="color:#C0BAB0;font-style:italic">No backlog items in flight.</p>'}
+  <div class="footer">Nexans HR Digital · Ticket Review Sessions · Confidential Internal Document</div>
+  <script>window.print();<\/script></body></html>`);
+  w.document.close();
+}
+
+// ══════════════════════════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════════════════════════
+initFilters();
+initData(); // loads everything from SharePoint via Power Automate on page open
+</script>
+</body>
+</html>
