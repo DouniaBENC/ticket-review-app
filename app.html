@@ -546,12 +546,12 @@ async function initData() {
   try {
     const entries = await fetchAllEntries();
     store = entries;
-    renderHome();
   } catch (err) {
     console.error('initData failed:', err);
-    setError('home-error', true, 'Could not reach SharePoint. Check your flow URL or network. ' + err.message);
+    setError('home-error', true, 'Could not load data from Supabase. ' + err.message);
   } finally {
     setLoading('home-loading', false);
+    renderHome(); // always show owner cards, even if Supabase unreachable
   }
 }
 
