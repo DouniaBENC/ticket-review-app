@@ -402,27 +402,34 @@ body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--tex
 
 <script>
 // ══════════════════════════════════════════════════════════════
-// POWER AUTOMATE ENDPOINTS
-// Replace these two URLs with your actual Power Automate HTTP trigger URLs
+// SUPABASE CONFIG
 // ══════════════════════════════════════════════════════════════
-const FLOW_GET  = 'PASTE_YOUR_GET_FLOW_URL_HERE';
-const FLOW_POST = 'PASTE_YOUR_POST_FLOW_URL_HERE';
+const SUPABASE_URL = 'https://nbejkjuyfdvaavstesva.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_JysBxxE_qnHgq09f58TvRQ_9Pk8uBKd';
+const TABLE = 'ticket_entries';
+
+const SB_HEADERS = {
+  'Content-Type':  'application/json',
+  'apikey':        SUPABASE_KEY,
+  'Authorization': `Bearer ${SUPABASE_KEY}`,
+  'Prefer':        'return=representation'
+};
 
 // ══════════════════════════════════════════════════════════════
-// API LAYER
-// All SharePoint communication goes through these two functions only.
-// fetchAllEntries() — loads everything from SharePoint on init
-// pushEntry()       — creates, updates or deletes a single item
+// API LAYER — Supabase REST
 // ══════════════════════════════════════════════════════════════
 
 async function fetchAllEntries() {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8000);
   try {
-    const r = await fetch(FLOW_GET, { signal: controller.signal });
-    if (!r.ok) throw new Error(`GET flow returned ${r.status}`);
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?select=*&order=created_at.desc&limit=5000`, {
+      headers: SB_HEADERS,
+      signal: controller.signal
+    });
+    if (!r.ok) throw new Error(`Supabase GET returned ${r.status}`);
     const data = await r.json();
-    return (Array.isArray(data) ? data : data.value || []).map(normalise);
+    return data.map(normalise);
   } finally {
     clearTimeout(timeout);
   }
@@ -434,36 +441,66 @@ async function refreshData() {
 }
 
 async function pushEntry(action, payload) {
-  // action: 'create' | 'update' | 'delete'
-  const r = await fetch(FLOW_POST, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action, ...payload })
-  });
-  if (!r.ok) throw new Error(`POST flow returned ${r.status}`);
-  // For 'create', the flow returns the new item (with its SharePoint ID)
   if (action === 'create') {
-    const created = await r.json();
-    return normalise(created);
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}`, {
+      method: 'POST',
+      headers: SB_HEADERS,
+      body: JSON.stringify({
+        owner:       payload.owner,
+        module:      payload.module,
+        entry_date:  payload.date,
+        issue:       payload.issue,
+        priority:    payload.priority,
+        status:      payload.status || 'open',
+        agenda:      payload.agenda,
+        improvement: payload.improvement,
+        comment:     payload.comment
+      })
+    });
+    if (!r.ok) throw new Error(`Supabase POST returned ${r.status}`);
+  }
+
+  if (action === 'update') {
+    const body = {};
+    if (payload.status      !== undefined) body.status      = payload.status;
+    if (payload.issue       !== undefined) body.issue        = payload.issue;
+    if (payload.priority    !== undefined) body.priority     = payload.priority;
+    if (payload.agenda      !== undefined) body.agenda       = payload.agenda;
+    if (payload.improvement !== undefined) body.improvement  = payload.improvement;
+    if (payload.comment     !== undefined) body.comment      = payload.comment;
+    body.modified_at = new Date().toISOString();
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${payload.spId}`, {
+      method: 'PATCH',
+      headers: SB_HEADERS,
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) throw new Error(`Supabase PATCH returned ${r.status}`);
+  }
+
+  if (action === 'delete') {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${payload.spId}`, {
+      method: 'DELETE',
+      headers: SB_HEADERS
+    });
+    if (!r.ok) throw new Error(`Supabase DELETE returned ${r.status}`);
   }
 }
 
-// Maps SharePoint column names → internal app field names.
-// Edit this if your SharePoint list uses different column names.
+// Maps Supabase column names → internal app field names.
 function normalise(item) {
   return {
-    spId:        item.ID        || item.id,
-    date:        item.SessionDate ? item.SessionDate.split('T')[0] : (item.date || ''),
-    owner:       item.Owner     || item.owner     || '',
-    module:      item.Module    || item.module    || '',
-    issue:       item.Title     || item.issue     || '',
-    priority:    item.Priority  || item.priority  || '',
-    status:      item.Status    || item.status    || 'open',
-    agenda:      item.Agenda    || item.agenda    || '',
-    improvement: item.Improvement || item.improvement || '',
-    comment:     item.Comment   || item.comment   || '',
-    savedAt:     item.Created   ? new Date(item.Created).getTime() : (item.savedAt || Date.now()),
-    modifiedAt:  item.Modified  ? new Date(item.Modified).getTime() : (item.modifiedAt || null),
+    spId:        item.id,
+    date:        item.entry_date || '',
+    owner:       item.owner      || '',
+    module:      item.module     || '',
+    issue:       item.issue      || '',
+    priority:    item.priority   || '',
+    status:      item.status     || 'open',
+    agenda:      item.agenda     || '',
+    improvement: item.improvement || '',
+    comment:     item.comment    || '',
+    savedAt:     item.created_at  ? new Date(item.created_at).getTime()  : Date.now(),
+    modifiedAt:  item.modified_at ? new Date(item.modified_at).getTime() : null,
   };
 }
 
