@@ -416,12 +416,21 @@ const FLOW_POST = 'PASTE_YOUR_POST_FLOW_URL_HERE';
 // ══════════════════════════════════════════════════════════════
 
 async function fetchAllEntries() {
-  const r = await fetch(FLOW_GET);
-  if (!r.ok) throw new Error(`GET flow returned ${r.status}`);
-  const data = await r.json();
-  // The flow returns an array of items. Normalise field names here
-  // so the rest of the app doesn't care about SharePoint internals.
-  return (Array.isArray(data) ? data : data.value || []).map(normalise);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  try {
+    const r = await fetch(FLOW_GET, { signal: controller.signal });
+    if (!r.ok) throw new Error(`GET flow returned ${r.status}`);
+    const data = await r.json();
+    return (Array.isArray(data) ? data : data.value || []).map(normalise);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function refreshData() {
+  const entries = await fetchAllEntries();
+  store = entries;
 }
 
 async function pushEntry(action, payload) {
@@ -729,8 +738,8 @@ async function saveEntry() {
   };
 
   try {
-    const saved = await pushEntry('create', payload);
-    store.push(saved);
+    await pushEntry('create', payload);
+    await refreshData();
     ['f-issue','f-agenda','f-impr','f-comment'].forEach(id => { document.getElementById(id).value = ''; });
     const ps = document.getElementById('f-prio-entry'); ps.selectedIndex = 0; ps.className = '';
     renderHist(curOwner, curMod);
@@ -755,7 +764,8 @@ async function updateStatus(spId, status) {
   renderHist(curOwner, curMod);
   try {
     await pushEntry('update', { spId, status });
-    toast(`Status → ${status}`);
+    await refreshData();
+    renderHist(curOwner, curMod);
   } catch (err) {
     entry.status = prev; // rollback
     renderHist(curOwner, curMod);
@@ -769,11 +779,10 @@ async function updateStatus(spId, status) {
 async function delEntry(spId) {
   if (!confirm('Delete this entry?')) return;
   const prev = [...store];
-  store = store.filter(e => e.spId != spId); // optimistic
-  renderHist(curOwner, curMod);
   try {
     await pushEntry('delete', { spId });
-    toast('Entry deleted');
+    await refreshData();
+    renderHist(curOwner, curMod);
   } catch (err) {
     store = prev; // rollback
     renderHist(curOwner, curMod);
@@ -851,8 +860,7 @@ async function saveEdit(spId) {
   };
   try {
     await pushEntry('update', updated);
-    // Update in-memory store
-    Object.assign(e, updated, { modifiedAt: Date.now() });
+    await refreshData();
     renderHist(curOwner, curMod);
     toast('Entry updated ✓');
   } catch (err) {
